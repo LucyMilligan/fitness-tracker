@@ -1,4 +1,3 @@
-from copy import deepcopy
 import uvicorn
 from fastapi import FastAPI, HTTPException, Query
 from pydantic import BaseModel
@@ -123,8 +122,12 @@ async def update_activity(id: int, updated_activity: ActivityUpdateModel):
         )
 
 @app.delete("/activities/{id}", status_code=204)
-def delete_activity(id: int):
+async def delete_activity(id: int):
     """endpoint that deletes an activity, according to the given id"""
     for activity in activities:
         if activity["id"] == int(id):
             activities.remove(activity)
+
+
+if __name__ == "__main__":
+    uvicorn.run(app, host="0.0.0.0", port=8080)
