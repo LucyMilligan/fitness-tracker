@@ -25,6 +25,7 @@ async def get_api_healthcheck():
     return {"message": "API up and running"}
 
 #TODO: add to users.py and change app to router
+#TODO: update tests
 ######################## USERS ENDPOINTS ############################
 @app.post("/users/", response_model=User, status_code=201)
 async def create_user(user: UserCreate, session: SessionDep):
