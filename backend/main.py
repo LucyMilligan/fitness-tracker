@@ -1,133 +1,201 @@
+from typing import Annotated
 import uvicorn
-from fastapi import FastAPI, HTTPException, Query
-from pydantic import BaseModel
-from fastapi.middleware.cors import CORSMiddleware
+from fastapi import Depends, FastAPI, HTTPException, Query
+from sqlmodel import Field, Session, SQLModel, create_engine, select
+from sqlalchemy import select, column, table
+import os
+from dotenv import load_dotenv
 
-from models import ActivityModel, ActivityUpdateModel, OrderBy, SortBy
+from models import Activity, ActivityCreate, ActivityUpdate, User, UserCreate, UserPublic, UserUpdate, OrderBy, SortBy
+
+
+load_dotenv()
+
+#create sqlalchemy engine (holds connection to db)
+postgres_url = os.getenv("DB_URL")
+engine = create_engine(postgres_url)
+
+def create_db_and_tables():
+    """Creates tables for all table models"""
+    SQLModel.metadata.create_all(engine)
+
+def get_session():
+    """Creates a session. A new session is provided for each request.
+    
+    This is used to create a session dependancy - a stored object in memory which
+    keeps track of changes to data, then uses the engine to communicate to
+    the database. """
+    with Session(engine) as session:
+        yield session
+
+SessionDep = Annotated[Session, Depends(get_session)]
 
 app = FastAPI()
 
-activities = [
-    {
-        "id": 1,
-        "user_id": 1,
-        "date": "2025-03-18",
-        "time": "11:18",
-        "activity": "run",
-        "activity_type": "trail",
-        "moving_time": "00:30:35",
-        "distance_km": 5.5,
-        "perceived_effort": 5,
-        "elevation_m": 25,
-        "date_updated": "2025-03-18T19:00:00.000"
-    },
-    {
-        "id": 2,
-        "user_id": 1,
-        "date": "2025-03-17",
-        "time": "17:45",
-        "activity": "run",
-        "activity_type": "trail",
-        "moving_time": "01:15:00",
-        "distance_km": 10,
-        "perceived_effort": 2,
-        "elevation_m": 140,
-        "date_updated": "2025-03-17T18:00:00.000"
-    }
-]
+@app.on_event("startup")
+def on_startup():
+    """Creates tables on startup"""
+    create_db_and_tables()
+
 
 @app.get("/")
 async def get_api_healthcheck():
     return {"message": "API up and running"}
 
 
-@app.get("/activities")
-async def get_activities(skip: int = 0, limit: int = 10, sort_by: SortBy = "id", order_by: OrderBy = "asc"):
-    """endpoint to get a paginated list of activities.
+######################## USERS ENDPOINTS ############################
+@app.post("/users/", response_model=User, status_code=201)
+async def create_user(user: UserCreate, session: SessionDep):
+    """Endpoint that allows a user to create a user"""
+    db_user = User.model_validate(user)
+    session.add(db_user)
+    session.commit()
+    session.refresh(db_user)
+    return db_user
 
-    :param skip: number of activities to skip
-    :param limit: number of activities to return
+@app.get("/users/", response_model=list[UserPublic])
+async def get_users(session: SessionDep, offset: int = 0, limit: int = 10):
+    """Endpoint to get a paginated list of users."""
+    users = session.exec(select(User).offset(offset).limit(limit)).scalars().all()
+    return users
+
+@app.get("/users/{user_id}", response_model=UserPublic)
+async def get_user_by_user_id(user_id: int, session: SessionDep):
+    """Endpoint to get a specific user by user_id."""
+    user = session.get(User, user_id)
+    if not user:
+        raise HTTPException(status_code=404, detail="User not found")
+    return user
+
+@app.patch("/users/{user_id}", response_model=UserPublic)
+async def update_user(user_id: int, user: UserUpdate, session: SessionDep):
+    """Endpoint that allows a user of specified user_id to be modified. All
+    user properties to be modified are optional, and if no updates occur, the
+    original values remain.
+
+    If the user_id does not exist, an exception with 404 status code is raised.
     """
+    user_db = session.get(User, user_id)
+    if not user_db:
+        raise HTTPException(status_code=404, detail="User not found")
+    user_data = user.model_dump(exclude_unset=True) #only includes values sent by the client
+    user_db.sqlmodel_update(user_data)
+    session.add(user_db)
+    session.commit()
+    session.refresh(user_db)
+    return user_db
+
+@app.delete("/users/{user_id}")
+async def delete_user(user_id: int, session: SessionDep):
+    """Endpoint that deletes a user, according to the given user_id.
+    If the ID does not exist, an exception with 404 status code is raised."""
+    user = session.get(User, user_id)
+    if not user:
+        raise HTTPException(status_code=404, detail="User not found")
+    session.delete(user)
+    session.commit()
+    return {"message": f"User_id {user_id} deleted"}
+
+
+######################## ACTIVITIES ENDPOINTS ############################
+@app.get("/activities/", response_model=list[Activity])
+async def get_activities(session: SessionDep, offset: int = 0, limit: int = 10, sort_by: SortBy = "id", order_by: OrderBy = "asc"):
+    """Endpoint to get a paginated list of activities.
+    
+    :param offset: number of activities to skip
+    :param limit: number of activities to return
+    :param sort_by: column to sort the activities by
+    :param order_by: how to order the activities (ascending or descending)
+    """
+    sort_by_col = column(sort_by)
+    query = select(Activity).offset(offset).limit(limit)
+
     if order_by.lower() == "asc":
-        activities_sorted = sorted(activities, key=lambda x: x[sort_by])
+        query = query.order_by(sort_by_col.asc())
     else:
-        activities_sorted = sorted(activities, key=lambda x: x[sort_by], reverse=True)
-    return activities_sorted[skip:skip+limit]
+        query = query.order_by(sort_by_col.desc())
+
+    activities = session.exec(query).scalars().all()
+
+    return activities
 
 
-@app.get("/activities/{id}")
-async def get_activity_by_id(id: int):
-    """endpoint that gets activities by id. If the ID does not exist,
+@app.get("/users/{user_id}/activities/", response_model=list[Activity])
+async def get_activities_by_user_id(session: SessionDep, user_id: int, offset: int = 0, limit: int = 10, sort_by: SortBy = "id", order_by: OrderBy = "asc"):
+    """Endpoint to get a paginated list of activities.
+    
+    :param user_id: user_id for which to get activities for
+    :param offset: number of activities to skip
+    :param limit: number of activities to return
+    :param sort_by: column to sort the activities by
+    :param order_by: how to order the activities (ascending or descending)
+    """
+    sort_by_col = column(sort_by)
+    query = select(Activity).where(Activity.user_id == user_id).offset(offset).limit(limit)
+
+    if order_by.lower() == "asc":
+        query = query.order_by(sort_by_col.asc())
+    else:
+        query = query.order_by(sort_by_col.desc())
+
+    activities = session.exec(query).scalars().all()
+
+    if not activities:
+        raise HTTPException(status_code=404, detail="No activities found")
+    
+    return activities
+
+
+@app.get("/activities/{id}", response_model=Activity)
+async def get_activity_by_activity_id(id: int, session: SessionDep):
+    """Endpoint that gets a specific activity by id. If the ID does not exist,
     an exception with 404 status code is raised."""
-    for activity in activities:
-        if activity["id"] == int(id):
-            return activity
-
-    raise HTTPException(
-        status_code=404,
-        detail=f"activity with id of {id} does not exist"
-    )
-
-
-@app.get("/users/{user_id}/activities")
-async def get_activity_by_user_id(user_id: int):
-    """endpoint that gets activities by user_id."""
-    user_activities = []
-    for activity in activities:
-        if activity["user_id"] == int(user_id):
-            user_activities.append(activity)
-
-    if user_activities:
-        return user_activities
-
-    raise HTTPException(
-        status_code=404,
-        detail=f"no activities recorded for user_id {user_id}"
-    )
-
-
-@app.post("/activities", status_code=201)
-async def create_activity(activity: ActivityModel):
-    """endpoint that allows a user to create an activity."""
-    activities.append(activity.model_dump())
+    activity = session.get(Activity, id)
+    if not activity:
+        raise HTTPException(status_code=404, detail="Activity not found")
     return activity
 
 
-@app.patch("/activities/{id}")
-async def update_activity(id: int, updated_activity: ActivityUpdateModel):
-    """endpoint that allows an activity of specified id to be modified. All
+@app.post("/activities/", response_model=Activity, status_code=201)
+async def create_activity(activity: ActivityCreate, session: SessionDep):
+    """Endpoint that allows a user to create an activity."""
+    db_activity = Activity.model_validate(activity)
+    session.add(db_activity)
+    session.commit()
+    session.refresh(db_activity)
+    return db_activity
+
+
+@app.patch("/activities/{id}", response_model=Activity)
+async def update_activity(id: int, activity: ActivityUpdate, session: SessionDep):
+    """Endpoint that allows an activity of specified id to be modified. All
     activity properties to be modified are optional, and if no updates occur, the
     original values remain.
 
     If the ID does not exist, an exception with 404 status code is raised.
     """
-    for activity in activities:
-        if activity["id"] == int(id):
-            activity["user_id"] = updated_activity.user_id if updated_activity.user_id else activity["user_id"]
-            activity["date"] = updated_activity.date if updated_activity.date else activity["date"]
-            activity["time"] = updated_activity.time if updated_activity.time else activity["time"]
-            activity["activity"] = updated_activity.activity if updated_activity.activity else activity["activity"]
-            activity["activity_type"] = updated_activity.activity_type if updated_activity.activity_type else activity["activity_type"]
-            activity["moving_time"] = updated_activity.moving_time if updated_activity.moving_time else activity["moving_time"]
-            activity["distance_km"] = updated_activity.distance_km if updated_activity.distance_km else activity["distance_km"]
-            activity["perceived_effort"] = updated_activity.perceived_effort if updated_activity.perceived_effort else activity["perceived_effort"]
-            activity["elevation_m"] = updated_activity.elevation_m if updated_activity.elevation_m else activity["elevation_m"]
-            activity["date_updated"] = updated_activity.date_updated
-
-            return activity
-
-    raise HTTPException(
-            status_code=404,
-            detail=f"activity with id of {id} does not exist"
-        )
-
-@app.delete("/activities/{id}", status_code=204)
-async def delete_activity(id: int):
-    """endpoint that deletes an activity, according to the given id"""
-    for activity in activities:
-        if activity["id"] == int(id):
-            activities.remove(activity)
+    activity_db = session.get(Activity, id)
+    if not activity_db:
+        raise HTTPException(status_code=404, detail="Activity not found")
+    activity_data = activity.model_dump(exclude_unset=True)
+    activity_db.sqlmodel_update(activity_data)
+    session.add(activity_db)
+    session.commit()
+    session.refresh(activity_db)
+    return activity_db
 
 
-if __name__ == "__main__":
-    uvicorn.run(app, host="0.0.0.0", port=8080)
+@app.delete("/activities/{id}")
+async def delete_activity(id: int, session: SessionDep):
+    """Endpoint that deletes an activity, according to the given id.
+    If the ID does not exist, an exception with 404 status code is raised."""
+    activity = session.get(Activity, id)
+    if not activity:
+        raise HTTPException(status_code=404, detail="Activity not found")
+    session.delete(activity)
+    session.commit()
+    return {"message": f"Activity id {id} deleted"}
+
+
+# if __name__ == "__main__":
+#     uvicorn.run(app, host="0.0.0.0", port=8080)
