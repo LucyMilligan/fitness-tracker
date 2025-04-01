@@ -12,7 +12,7 @@ Postgres - this can be downloaded from https://www.postgresql.org/download/
 
 Create a virtual environment and install the requirements
 
-```pip install requirements.txt```
+```pip install -r requirements.txt```
 
 ## To run the application
 
