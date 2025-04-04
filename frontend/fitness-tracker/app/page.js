@@ -1,5 +1,6 @@
 'use client'
 import Image from "next/image";
+import Link from "next/link";
 import { useState } from "react";
 
 export default function Home() {
@@ -47,27 +48,34 @@ export default function Home() {
         </ol>
 
         <div className="flex gap-6 items-center flex-col sm:flex-row py-6">
-          <a
+          {/* <a
+            className="rounded-full border border-solid border-transparent transition-colors flex items-center justify-center bg-slate-700 text-white gap-2 hover:bg-teal-600 font-normal text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 sm:w-auto"
+            href="dashboard"
+            rel="noopener noreferrer"
+          >
+            Let's go!
+          </a> */}
+          <Link
             className="rounded-full border border-solid border-transparent transition-colors flex items-center justify-center bg-slate-700 text-white gap-2 hover:bg-teal-600 font-normal text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 sm:w-auto"
             href="enter_data"
             rel="noopener noreferrer"
           >
             Enter Activity Data
-          </a>
-          <a
+          </Link>
+          <Link
             className="rounded-full border border-solid border-transparent transition-colors flex items-center justify-center bg-slate-700 text-white gap-2 hover:bg-teal-600 font-normal text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 sm:w-auto"
             href="view_data"
             rel="noopener noreferrer"
           >
             View Activity Data
-          </a>
-          <a
+          </Link>
+          <Link
             className="rounded-full border border-solid border-transparent transition-colors flex items-center justify-center bg-slate-700 text-white gap-2 hover:bg-teal-600 font-normal text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 sm:w-auto"
-            href="plot_data"
+            href="visualise_data"
             rel="noopener noreferrer"
           >
             Visualise Data
-          </a>
+          </Link>
         </div>
       </main>
       <footer className="row-start-3 flex gap-[24px] flex-wrap items-center justify-center">
