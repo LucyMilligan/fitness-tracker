@@ -21,9 +21,9 @@ export default function RootLayout( {children}) {
   return (
     <html lang="en">
       <body
-        className={`${geistMono.variable} ${geistSans.variable} bg-cyan-500/40 text-black items-center justify-items-center p-5 pb-5 gap-5 sm:p-5`}
+        className={`${geistMono.variable} ${geistSans.variable} bg-cyan-500/40 text-black items-center justify-items-center gap-5`}
       >
-        <header className="bg-cyan-500/70 px-70">
+        <header className="bg-cyan-500/70 w-full justify-items-center">
           <h1 className="text-[35px] font-semibold font-[family-name:var(--font-geist-mono)]">Fitness Tracker</h1>
           <div className="justify-center flex gap-6 flex-row sm:flex-row py-2">
               <Image
@@ -53,7 +53,7 @@ export default function RootLayout( {children}) {
             </div>
         </header>
         <main>{children}</main>
-        <footer className="flex gap-[24px] flex-wrap py-5 my-15 bg-cyan-500/70 px-50"> {/*doesn't look consistent with header on small page*/}
+        <footer className="flex gap-[24px] flex-wrap py-5 mt-15 bg-cyan-500/70 w-full justify-center"> {/*doesn't look consistent with header on small page*/}
           <p
             className="flex gap-2"
           >
