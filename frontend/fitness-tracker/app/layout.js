@@ -1,6 +1,7 @@
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import Image from "next/image";
+import Link from "next/link";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -59,6 +60,19 @@ export default function RootLayout( {children}) {
           >
             © 2025 by Lucy Milligan
           </p>
+          <Link
+            className="flex gap-2 hover:underline hover:underline-offset-4"
+            href="/"
+          >
+            <Image
+              aria-hidden
+              src="/homepage.svg"
+              alt="Home icon"
+              width={18}
+              height={18}
+            />
+            Home
+          </Link>
           <a
             className="flex gap-2 hover:underline hover:underline-offset-4"
             href="https://www.linkedin.com/in/lucy-milligan-888491150/"

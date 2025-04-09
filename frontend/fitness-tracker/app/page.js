@@ -8,20 +8,21 @@ export default function Home() {
     <>
       <main>
         <p className="text-[45px] text-center py-8 font-semibold font-[family-name:var(--font-geist-mono)]">Home</p>
-        <p className="text-[15px] text-black font-[family-name:var(--font-geist-mono)]">Welcome to the fitness tracker app! Here you'll be able to...</p>
-        <ol className="list-inside list-decimal text-sm/8 text-center font-[family-name:var(--font-geist-mono)] pl-5">
-          <li className="tracking-[-.01em]">
+        <p className="text-[16px] text-black text-center pb-5">Welcome to the fitness tracker app!</p>
+        <p className="text-[16px] text-black text-center py-5">Select one of the options below to track and visualise your activities and fitness levels.</p>
+        {/* <ol className="list-inside list-decimal text-sm/8 text-center pl-5">
+          <li>
             Enter activity data
           </li>
-          <li className="tracking-[-.01em]">
+          <li>
             View and filter activity data
           </li>
-          <li className="tracking-[-.01em]">
+          <li>
             Visualise activity data and monitor fitness levels
           </li>
-        </ol>
+        </ol> */}
 
-        <div className="flex gap-6 items-center flex-col sm:flex-row py-6">
+        <div className="flex gap-6 items-center justify-center flex-col sm:flex-row py-6">
           <Link
             className="rounded-full border border-solid border-transparent transition-colors flex items-center justify-center bg-slate-700 text-white gap-2 hover:bg-teal-600 font-normal text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 sm:w-auto"
             href="enter_data"
