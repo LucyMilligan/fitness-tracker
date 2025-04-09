@@ -1,45 +1,31 @@
+"use client";
 import Link from "next/link";
+import { useState } from "react";
+import { createActivity } from "../server_functions/createActivity"
 
-async function createActivity(data) {
-  "use server"
-  //how to handle API errors?? 
-  //use API to post the activity to the db
-  // const activity = data.get("activity")?.valueOf();
-  const activity_data = {
-    "user_id": data.get("user_id")?.valueOf(),
-    "date": data.get("date")?.valueOf(),
-    "time": data.get("time")?.valueOf(),
-    "activity": data.get("activity")?.valueOf(),
-    "activity_type": data.get("activity_type")?.valueOf(),
-    "moving_time": data.get("moving_time")?.valueOf(),
-    "distance_km": data.get("distance_km")?.valueOf(),
-    "perceived_effort": data.get("perceived_effort")?.valueOf(),
-    "elevation_m": data.get("elevation_m")?.valueOf()
-  };
-  const jsonData = JSON.stringify(activity_data);
-
-  fetch("http://127.0.0.1:8080/activities/", {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: jsonData
-  })
-  .then(response => {
-    if (!response.ok) {
-      throw new Error(`HTTP error! Status: ${response.status}`);
-    }
-    return response.json();
-  })
-  .then(data => console.log("Success:", data))
-  .catch(error => console.log("Error:", error));
-}
 
 export default function Page() {
-    return ( 
+  const [errorMessage, setErrorMessage] = useState("")
+  const [successMessage, setSuccessMessage] = useState("")
+  
+  async function handleSubmit(formData) {
+    const result = await createActivity(formData);
+
+    if (result.success) {
+      setSuccessMessage("Activity added!");
+      setErrorMessage("");
+    } else {
+      setErrorMessage(result.error);
+      setSuccessMessage("");
+    }
+  }
+  
+  return ( 
       <>
         <main>
           <p className="text-[45px] text-center py-8 font-semibold font-[family-name:var(--font-geist-mono)]">Enter Activity Data</p>
           <p className="py-6 font-semibold text-center">Enter your latest activity data below:</p>
-          <form action={createActivity} className="flex gap-2 flex-col">
+          <form action={handleSubmit} className="flex gap-2 flex-col">
             {/* User_id input */}  
             <div className="flex items-center gap-4">
               <label htmlFor="user_id" className="w-50 text-right">User ID:</label>          
@@ -95,20 +81,24 @@ export default function Page() {
             </div>    
 
             {/* Buttons */}
-            <div className="flex gap-1 pt-8 pl-40 justify-center items-center">
+            <div className="flex gap-1 pt-6 pl-38 justify-center items-center">
               <Link
                 href=".."
-                className="text-center border rounded-full border-solid border-transparent focus-within:border-teal-600 w-15 hover:bg-teal-600 bg-slate-700 text-white"
+                className="text-center border rounded-full border-solid border-transparent focus-within:border-teal-600 w-18 hover:bg-teal-600 bg-slate-700 text-white"
               >
                 Cancel
               </Link>
               <button 
                 type="submit"
-                className="text-center border rounded-full border-solid border-transparent focus-within:border-teal-600 w-15 hover:bg-teal-600 bg-slate-700 text-white"
+                className="text-center border rounded-full border-solid border-transparent focus-within:border-teal-600 w-17 hover:bg-teal-600 bg-slate-700 text-white"
               >
                 Create
               </button>
-            </div>          
+            </div>
+
+            {/* if message exists (ie not null/""/false) - render <p> element. Otherwise render nothing. */}            
+            {errorMessage && <p className="text-red-600 text-center pt-5">{errorMessage}</p>}
+            {successMessage && <p className="text-black text-center pl-45 pt-5">{successMessage}</p>}
           </form>
         </main>
       </>
