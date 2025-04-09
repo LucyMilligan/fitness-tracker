@@ -7,20 +7,20 @@ export function ActivityItem({ activity }){
                 <dd>{activity.user_id}</dd>
                 <dt>ACTIVITY: </dt>
                 <dd>{activity.activity}</dd>
+                <dt>ACTIVITY TYPE: </dt>
+                <dd>{activity.activity_type}</dd>
                 <dt>DATE: </dt>
                 <dd>{activity.date}</dd>
                 <dt>TIME: </dt>
                 <dd>{activity.time}</dd>
-                <dt>DISTANCE: </dt>
-                <dd>{activity.distance_km} km</dd>
-                <dt>ACTIVITY TYPE: </dt>
-                <dd>{activity.activity_type}</dd>
                 <dt>ELEVATION: </dt>
                 <dd>{activity.elevation_m} m</dd>
-                <dt>PERCEIVED EFFORT: </dt>
-                <dd>{activity.perceived_effort}</dd>
+                <dt>DISTANCE: </dt>
+                <dd>{activity.distance_km} km</dd>
                 <dt>MOVING TIME: </dt>
                 <dd>{activity.moving_time}</dd>
+                <dt>PERCEIVED EFFORT: </dt>
+                <dd>{activity.perceived_effort}</dd>
             </dl>
         </div>
     )
