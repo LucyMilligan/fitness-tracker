@@ -1,6 +1,7 @@
 import { ActivityItem } from "../components/ActivityItem"
 
-function getActivityData() {
+async function getActivityData() {
+    "use server"
     return fetch('http://127.0.0.1:8080/activities/')
 }
 
