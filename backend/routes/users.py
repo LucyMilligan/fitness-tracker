@@ -17,12 +17,22 @@ async def create_user(user: UserCreate, session: SessionDep):
 
         name: str (e.g. "bob")
         email: str (e.g. "bob@gmail.com")
+
+    If any of the fields are in the incorrect format, an exception with 422
+    status code is raised.
     """
-    db_user = User.model_validate(user)
-    session.add(db_user)
-    session.commit()
-    session.refresh(db_user)
-    return db_user
+    try:
+        db_user = User.model_validate(user)
+        session.add(db_user)
+        session.commit()
+        session.refresh(db_user)
+        return db_user
+    except (ValueError) as e:
+        error_messages = [f"{err['loc'][0]} - {err['msg']}" for err in e.errors()]
+        raise HTTPException(
+            status_code=422,
+            detail=f"Format of data incorrect: {", ".join(error_messages)}"
+        )
 
 
 @router.get("/", response_model=list[UserPublic])
@@ -49,11 +59,15 @@ async def update_user(user_id: int, user: UserUpdate, session: SessionDep):
     original values remain.
 
     If the user_id does not exist, an exception with 404 status code is raised.
+
+    If any of the fields are in the incorrect format, an exception with
+    422 status code is raised.
     """
     user_db = session.get(User, user_id)
     if not user_db:
         raise HTTPException(status_code=404, detail="User not found")
     user_data = user.model_dump(exclude_unset=True) #only includes values sent by the client
+    # model_dump validating against UserUpdate
     user_db.sqlmodel_update(user_data)
     session.add(user_db)
     session.commit()

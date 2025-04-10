@@ -6,14 +6,14 @@ from database.models import Activity, User
 
 class TestCreateUser:
     def test_create_user_valid_request_body(self, client: TestClient):
-        user_test = {"name": "Test", "email": "test email"}
+        user_test = {"name": "Test", "email": "test@email"}
         response = client.post("/users/", json=user_test)
         data = response.json()
 
         assert response.status_code == 201
         assert data["name"] == "Test"
         assert data["user_id"] is not None
-        assert data["email"] == "test email"
+        assert data["email"] == "test@email"
 
     def test_create_user_incomplete_request_body(self, client: TestClient):
         user_test = {"name": "Test"}
@@ -24,6 +24,14 @@ class TestCreateUser:
         user_test = {"name": "Test", "email": 57864587}
         response = client.post("/users/", json=user_test)
         assert response.status_code == 422
+
+    def test_create_user_invalid_email_address(self, client: TestClient):
+        user_test = {"name": "Test", "email": "testemail"} #invalid email (should contain @)
+        response = client.post("/users/", json=user_test)
+        data = response.json()
+        assert response.status_code == 422
+        assert "Invalid email address." in data["detail"]
+
 
 
 class TestGetUsers:
@@ -74,8 +82,8 @@ class TestGetUserByUserId:
 
 
 class TestUpdateUser:
-    def test_update_user_updates_user(self, session: Session, client: TestClient):
-        user_1 = User(name="test_1", email="test email 1")
+    def test_update_user_updates_user_name(self, session: Session, client: TestClient):
+        user_1 = User(name="test_1", email="test@email")
         session.add(user_1)
         session.commit()
 
@@ -87,6 +95,16 @@ class TestUpdateUser:
         assert data["user_id"] == user_1.user_id
         assert "email" not in data
 
+    def test_update_user_raises_422_error_for_incorrect_email_format(self, session: Session, client: TestClient):
+        user_1 = User(name="test_1", email="test@email")
+        session.add(user_1)
+        session.commit()
+
+        response = client.patch("/users/1", json={"name": "updated", "email": "updated_email"}) #email missing @
+        data = response.json()
+
+        assert response.status_code == 422
+        assert "Invalid email address." in data["detail"][0]["msg"]
 
 class TestDeleteUser:
     def test_delete_user_deletes_user(self, session: Session, client: TestClient):

@@ -29,6 +29,14 @@ class User(UserBase, table=True):
     user_id: int | None = Field(default=None, primary_key=True)
     email: str
 
+    @field_validator('email', mode='before')
+    @classmethod
+    def date_valid(cls, value: str):
+        if "@" not in value:
+            raise ValueError("Invalid email address.")
+        return value
+
+
 
 class UserPublic(UserBase):
     user_id: int
@@ -44,6 +52,13 @@ class UserUpdate(UserBase):
     #optional updates to a specific user_id
     name: str | None = None
     email: str | None = None
+
+    @field_validator('email', mode='before')
+    @classmethod
+    def date_valid(cls, value: str):
+        if "@" not in value:
+            raise ValueError("Invalid email address.")
+        return value
 
 
 class Activity(SQLModel, table=True):
