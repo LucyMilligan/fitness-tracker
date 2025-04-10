@@ -1,10 +1,17 @@
 from fastapi import APIRouter
 from fastapi import HTTPException
-# from sqlmodel import select
 from sqlalchemy import select, column
 
 from database.database import SessionDep
-from database.models import Activity, User, UserCreate, UserPublic, UserUpdate, OrderBy, SortBy
+from database.models import (
+    Activity,
+    User,
+    UserCreate,
+    UserPublic,
+    UserUpdate,
+    OrderBy,
+    SortBy,
+)
 
 
 router = APIRouter()
@@ -27,11 +34,11 @@ async def create_user(user: UserCreate, session: SessionDep):
         session.commit()
         session.refresh(db_user)
         return db_user
-    except (ValueError) as e:
+    except ValueError as e:
         error_messages = [f"{err['loc'][0]} - {err['msg']}" for err in e.errors()]
         raise HTTPException(
             status_code=422,
-            detail=f"Format of data incorrect: {", ".join(error_messages)}"
+            detail=f"Format of data incorrect: {", ".join(error_messages)}",
         )
 
 
@@ -66,7 +73,9 @@ async def update_user(user_id: int, user: UserUpdate, session: SessionDep):
     user_db = session.get(User, user_id)
     if not user_db:
         raise HTTPException(status_code=404, detail="User not found")
-    user_data = user.model_dump(exclude_unset=True) #only includes values sent by the client
+    user_data = user.model_dump(
+        exclude_unset=True
+    )  # only includes values sent by the client
     # model_dump validating against UserUpdate
     user_db.sqlmodel_update(user_data)
     session.add(user_db)
@@ -88,9 +97,16 @@ async def delete_user(user_id: int, session: SessionDep):
 
 
 @router.get("/{user_id}/activities/", response_model=list[Activity])
-async def get_activities_by_user_id(session: SessionDep, user_id: int, offset: int = 0, limit: int = 10, sort_by: SortBy = "id", order_by: OrderBy = "asc"):
+async def get_activities_by_user_id(
+    session: SessionDep,
+    user_id: int,
+    offset: int = 0,
+    limit: int = 10,
+    sort_by: SortBy = "id",
+    order_by: OrderBy = "asc",
+):
     """Endpoint to get a paginated list of activities.
-    
+
     :param user_id: user_id for which to get activities for
     :param offset: number of activities to skip
     :param limit: number of activities to return
@@ -98,7 +114,9 @@ async def get_activities_by_user_id(session: SessionDep, user_id: int, offset: i
     :param order_by: how to order the activities (ascending or descending)
     """
     sort_by_col = column(sort_by)
-    query = select(Activity).where(Activity.user_id == user_id).offset(offset).limit(limit)
+    query = (
+        select(Activity).where(Activity.user_id == user_id).offset(offset).limit(limit)
+    )
 
     if order_by.lower() == "asc":
         query = query.order_by(sort_by_col.asc())
@@ -109,5 +127,5 @@ async def get_activities_by_user_id(session: SessionDep, user_id: int, offset: i
 
     if not activities:
         raise HTTPException(status_code=404, detail="No activities found")
-    
+
     return activities

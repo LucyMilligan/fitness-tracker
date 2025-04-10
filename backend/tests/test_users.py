@@ -26,24 +26,26 @@ class TestCreateUser:
         assert response.status_code == 422
 
     def test_create_user_invalid_email_address(self, client: TestClient):
-        user_test = {"name": "Test", "email": "testemail"} #invalid email (should contain @)
+        user_test = {
+            "name": "Test",
+            "email": "testemail",
+        }  # invalid email (should contain @)
         response = client.post("/users/", json=user_test)
         data = response.json()
         assert response.status_code == 422
         assert "Invalid email address." in data["detail"]
 
 
-
 class TestGetUsers:
     def test_get_users(self, session: Session, client: TestClient):
-        #add users to the empty database
+        # add users to the empty database
         user_1 = User(name="test_1", email="test email 1")
         user_2 = User(name="test_2", email="test email 2")
         session.add(user_1)
         session.add(user_2)
         session.commit()
 
-        #test the endpoint
+        # test the endpoint
         response = client.get("/users/")
         data = response.json()
 
@@ -69,7 +71,9 @@ class TestGetUserByUserId:
         assert data["name"] == user_1.name
         assert data["user_id"] == 1
 
-    def test_get_user_by_user_id_raises_exception(self, session: Session, client: TestClient):
+    def test_get_user_by_user_id_raises_exception(
+        self, session: Session, client: TestClient
+    ):
         user_1 = User(name="test_1", email="test email 1")
         session.add(user_1)
         session.commit()
@@ -95,16 +99,21 @@ class TestUpdateUser:
         assert data["user_id"] == user_1.user_id
         assert "email" not in data
 
-    def test_update_user_raises_422_error_for_incorrect_email_format(self, session: Session, client: TestClient):
+    def test_update_user_raises_422_error_for_incorrect_email_format(
+        self, session: Session, client: TestClient
+    ):
         user_1 = User(name="test_1", email="test@email")
         session.add(user_1)
         session.commit()
 
-        response = client.patch("/users/1", json={"name": "updated", "email": "updated_email"}) #email missing @
+        response = client.patch(
+            "/users/1", json={"name": "updated", "email": "updated_email"}
+        )  # email missing @
         data = response.json()
 
         assert response.status_code == 422
         assert "Invalid email address." in data["detail"][0]["msg"]
+
 
 class TestDeleteUser:
     def test_delete_user_deletes_user(self, session: Session, client: TestClient):
@@ -122,7 +131,9 @@ class TestDeleteUser:
 
 
 class TestGetActivitiesByUserId:
-    def test_endpoint_responds_with_specific_user_id_activities(self, session: Session, client: TestClient, activity_test_1, activity_test_2):
+    def test_endpoint_responds_with_specific_user_id_activities(
+        self, session: Session, client: TestClient, activity_test_1, activity_test_2
+    ):
         activity_1 = Activity(**activity_test_1)
         activity_2 = Activity(**activity_test_2)
         session.add(activity_1)
@@ -135,7 +146,6 @@ class TestGetActivitiesByUserId:
         assert isinstance(response_activities, list)
         for activity in response_activities:
             assert activity["user_id"] == 1
-
 
     def test_invalid_user_id_raises_404_error(self, client: TestClient):
         response = client.get("/users/-1/activities")

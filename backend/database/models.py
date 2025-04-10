@@ -14,10 +14,10 @@ SortBy = Literal[
     "distance_km",
     "perceived_effort",
     "elevation_m",
-    "date_updated"
+    "date_updated",
 ]
 
-OrderBy = Literal['ASC', 'DESC', 'asc', 'desc']
+OrderBy = Literal["ASC", "DESC", "asc", "desc"]
 
 
 class UserBase(SQLModel):
@@ -29,7 +29,7 @@ class User(UserBase, table=True):
     user_id: int | None = Field(default=None, primary_key=True)
     email: str
 
-    @field_validator('email', mode='before')
+    @field_validator("email", mode="before")
     @classmethod
     def date_valid(cls, value: str):
         if "@" not in value:
@@ -37,23 +37,22 @@ class User(UserBase, table=True):
         return value
 
 
-
 class UserPublic(UserBase):
     user_id: int
-    #email stays hidden for public users
+    # email stays hidden for public users
 
 
 class UserCreate(UserBase):
-    #user_id auto generated
+    # user_id auto generated
     email: str
 
 
-class UserUpdate(UserBase): 
-    #optional updates to a specific user_id
+class UserUpdate(UserBase):
+    # optional updates to a specific user_id
     name: str | None = None
     email: str | None = None
 
-    @field_validator('email', mode='before')
+    @field_validator("email", mode="before")
     @classmethod
     def date_valid(cls, value: str):
         if "@" not in value:
@@ -74,7 +73,7 @@ class Activity(SQLModel, table=True):
     perceived_effort: int
     elevation_m: int | None = None
 
-    @field_validator('date', mode='before')
+    @field_validator("date", mode="before")
     @classmethod
     def date_valid(cls, value: str):
         try:
@@ -83,7 +82,7 @@ class Activity(SQLModel, table=True):
         except (ValueError, TypeError):
             raise ValueError("Date does not match format 'YYYY/MM/DD'")
 
-    @field_validator('time', mode='before')
+    @field_validator("time", mode="before")
     @classmethod
     def time_valid(cls, value: str):
         try:
@@ -92,24 +91,24 @@ class Activity(SQLModel, table=True):
         except (ValueError, TypeError):
             raise ValueError("Time does not match format 'HH:MM'")
 
-    @field_validator('moving_time', mode='before')
+    @field_validator("moving_time", mode="before")
     @classmethod
     def moving_time_valid(cls, value: str):
         try:
-            hours,  minutes, seconds = map(int, value.split(":"))
+            hours, minutes, seconds = map(int, value.split(":"))
             return value
         except (ValueError, AttributeError):
             raise ValueError("Time does not match format 'HH:MM:SS'")
 
-    @field_validator('activity', mode='before')
+    @field_validator("activity", mode="before")
     @classmethod
     def activity_valid(cls, value: str):
         valid_activities = ["run", "ride"]
         if value not in valid_activities:
             raise ValueError(f"Activity not in {valid_activities}")
         return value
-        
-    @field_validator('perceived_effort', mode='before')
+
+    @field_validator("perceived_effort", mode="before")
     @classmethod
     def perceived_effort_valid(cls, value: int):
         try:
@@ -121,7 +120,7 @@ class Activity(SQLModel, table=True):
 
 
 class ActivityCreate(SQLModel):
-    #id auto generated
+    # id auto generated
     user_id: int
     date: str
     time: str
@@ -133,7 +132,7 @@ class ActivityCreate(SQLModel):
     elevation_m: int | None = None
 
 
-class ActivityUpdate(SQLModel): #optional updates to a specific activity id
+class ActivityUpdate(SQLModel):  # optional updates to a specific activity id
     user_id: int | None = None
     date: str | None = None
     time: str | None = None
@@ -144,7 +143,7 @@ class ActivityUpdate(SQLModel): #optional updates to a specific activity id
     perceived_effort: int | None = None
     elevation_m: int | None = None
 
-    @field_validator('date', mode='before')
+    @field_validator("date", mode="before")
     @classmethod
     def date_valid(cls, value: str):
         try:
@@ -153,7 +152,7 @@ class ActivityUpdate(SQLModel): #optional updates to a specific activity id
         except (ValueError, TypeError):
             raise ValueError("Date does not match format 'YYYY/MM/DD'")
 
-    @field_validator('time', mode='before')
+    @field_validator("time", mode="before")
     @classmethod
     def time_valid(cls, value: str):
         try:
@@ -162,24 +161,24 @@ class ActivityUpdate(SQLModel): #optional updates to a specific activity id
         except (ValueError, TypeError):
             raise ValueError("Time does not match format 'HH:MM'")
 
-    @field_validator('moving_time', mode='before')
+    @field_validator("moving_time", mode="before")
     @classmethod
     def moving_time_valid(cls, value: str):
         try:
-            hours,  minutes, seconds = map(int, value.split(":"))
+            hours, minutes, seconds = map(int, value.split(":"))
             return value
         except (ValueError, AttributeError):
             raise ValueError("Time does not match format 'HH:MM:SS'")
 
-    @field_validator('activity', mode='before')
+    @field_validator("activity", mode="before")
     @classmethod
     def activity_valid(cls, value: str):
         valid_activities = ["run", "ride"]
         if value not in valid_activities:
             raise ValueError(f"Activity not in {valid_activities}")
         return value
-        
-    @field_validator('perceived_effort', mode='before')
+
+    @field_validator("perceived_effort", mode="before")
     @classmethod
     def perceived_effort_valid(cls, value: int):
         try:

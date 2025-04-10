@@ -9,9 +9,15 @@ router = APIRouter()
 
 
 @router.get("/", response_model=list[Activity])
-async def get_activities(session: SessionDep, offset: int = 0, limit: int = 10, sort_by: SortBy = "id", order_by: OrderBy = "asc"):
+async def get_activities(
+    session: SessionDep,
+    offset: int = 0,
+    limit: int = 10,
+    sort_by: SortBy = "id",
+    order_by: OrderBy = "asc",
+):
     """Endpoint to get a paginated list of activities.
-    
+
     :param offset: number of activities to skip
     :param limit: number of activities to return
     :param sort_by: column to sort the activities by
@@ -69,8 +75,9 @@ async def create_activity(activity: ActivityCreate, session: SessionDep):
         error_messages = [f"{err['loc'][0]} - {err['msg']}" for err in e.errors()]
         raise HTTPException(
             status_code=422,
-            detail=f"Format of data incorrect: {", ".join(error_messages)}"
+            detail=f"Format of data incorrect: {", ".join(error_messages)}",
         )
+
 
 @router.patch("/{id}", response_model=Activity)
 async def update_activity(id: int, activity: ActivityUpdate, session: SessionDep):
@@ -87,7 +94,7 @@ async def update_activity(id: int, activity: ActivityUpdate, session: SessionDep
     if not activity_db:
         raise HTTPException(status_code=404, detail="Activity not found")
     activity_data = activity.model_dump(exclude_unset=True)
-    # don't need to validate against Activity because model_dump is validating against 
+    # don't need to validate against Activity because model_dump is validating against
     # ActivityUpdate (optional fields required which Activity doesn't have)
     activity_db.sqlmodel_update(activity_data)
     session.add(activity_db)

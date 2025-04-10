@@ -8,10 +8,12 @@ from sqlalchemy.exc import IntegrityError
 from database.database import create_db_and_tables
 from routes import activities, users
 
+
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     create_db_and_tables()
     yield
+
 
 app = FastAPI(lifespan=lifespan)
 
@@ -25,7 +27,9 @@ async def integrity_error_handler(request: Request, exc: IntegrityError):
     (e.g. an activity is added with a user_id that doesn't exist in the user_table)"""
     return JSONResponse(
         status_code=400,
-        content={"detail": "Something went wrong on the server/database. Check your user_id is valid and exists."}
+        content={
+            "detail": "Something went wrong on the server/database. Check your user_id is valid and exists."
+        },
     )
 
 
