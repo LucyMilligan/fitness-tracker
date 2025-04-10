@@ -1,6 +1,9 @@
 from contextlib import asynccontextmanager
 import uvicorn
 from fastapi import FastAPI
+from fastapi.requests import Request
+from fastapi.responses import JSONResponse
+from sqlalchemy.exc import IntegrityError
 
 from database.database import create_db_and_tables
 from routes import activities, users
@@ -14,6 +17,17 @@ app = FastAPI(lifespan=lifespan)
 
 app.include_router(activities.router, prefix="/activities")
 app.include_router(users.router, prefix="/users")
+
+
+@app.exception_handler(IntegrityError)
+async def integrity_error_handler(request: Request, exc: IntegrityError):
+    """Error handler to catch database errors, such as a foreign key violation
+    (e.g. an activity is added with a user_id that doesn't exist in the user_table)"""
+    return JSONResponse(
+        status_code=400,
+        content={"detail": "Something went wrong on the server/database. Check your user_id is valid and exists."}
+    )
+
 
 @app.get("/")
 async def get_api_healthcheck():

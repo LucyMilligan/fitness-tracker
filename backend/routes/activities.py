@@ -1,5 +1,4 @@
-from fastapi import APIRouter
-from fastapi import HTTPException
+from fastapi import APIRouter, HTTPException
 from sqlalchemy import select, column
 
 from database.database import SessionDep
@@ -7,6 +6,7 @@ from database.models import Activity, ActivityCreate, ActivityUpdate, OrderBy, S
 
 
 router = APIRouter()
+
 
 @router.get("/", response_model=list[Activity])
 async def get_activities(session: SessionDep, offset: int = 0, limit: int = 10, sort_by: SortBy = "id", order_by: OrderBy = "asc"):
