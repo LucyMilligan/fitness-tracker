@@ -1,10 +1,10 @@
 from fastapi import APIRouter
 from fastapi import HTTPException
-from sqlmodel import select
+# from sqlmodel import select
 from sqlalchemy import select, column
 
-from database import SessionDep
-from models import Activity, User, UserCreate, UserPublic, UserUpdate, OrderBy, SortBy
+from database.database import SessionDep
+from database.models import Activity, User, UserCreate, UserPublic, UserUpdate, OrderBy, SortBy
 
 
 router = APIRouter()
@@ -12,7 +12,12 @@ router = APIRouter()
 
 @router.post("/", response_model=User, status_code=201)
 async def create_user(user: UserCreate, session: SessionDep):
-    """Endpoint that allows a user to create a user"""
+    """Endpoint that allows a user to create a user. The user request body
+    should be in the format:
+
+        name: str (e.g. "bob")
+        email: str (e.g. "bob@gmail.com")
+    """
     db_user = User.model_validate(user)
     session.add(db_user)
     session.commit()
@@ -29,7 +34,8 @@ async def get_users(session: SessionDep, offset: int = 0, limit: int = 10):
 
 @router.get("/{user_id}", response_model=UserPublic)
 async def get_user_by_user_id(user_id: int, session: SessionDep):
-    """Endpoint to get a specific user by user_id."""
+    """Endpoint to get a specific user by user_id. Response does
+    not include email address."""
     user = session.get(User, user_id)
     if not user:
         raise HTTPException(status_code=404, detail="User not found")

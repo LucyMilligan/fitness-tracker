@@ -1,15 +1,9 @@
 from fastapi import APIRouter
-from contextlib import asynccontextmanager
-from typing import Annotated
-import uvicorn
-from fastapi import Depends, FastAPI, HTTPException, Query
-# from sqlmodel import Field, Session, SQLModel, create_engine, select
-from sqlalchemy import select, column, table
-import os
-from dotenv import load_dotenv
+from fastapi import HTTPException
+from sqlalchemy import select, column
 
-from database import SessionDep
-from models import Activity, ActivityCreate, ActivityUpdate, User, UserCreate, UserPublic, UserUpdate, OrderBy, SortBy
+from database.database import SessionDep
+from database.models import Activity, ActivityCreate, ActivityUpdate, OrderBy, SortBy
 
 
 router = APIRouter()
@@ -48,13 +42,35 @@ async def get_activity_by_activity_id(id: int, session: SessionDep):
 
 @router.post("/", response_model=Activity, status_code=201)
 async def create_activity(activity: ActivityCreate, session: SessionDep):
-    """Endpoint that allows a user to create an activity."""
-    db_activity = Activity.model_validate(activity)
-    session.add(db_activity)
-    session.commit()
-    session.refresh(db_activity)
-    return db_activity
+    """Endpoint that allows a user to create an activity, with the request body
+    validated against the Activity model. The activity request body
+    should be in the format:
 
+        user_id: int (e.g. 1)
+        date: str, in the format "YYYY/MM/DD" (e.g. "2025/02/24")
+        time: str, in the format "hh:mm" (e.g. "17:45")
+        activity: str (e.g. "run")
+        activity_type: str (e.g. "trail")
+        moving_time: str, in the format "hh:mm:ss" (e.g. 00:32:05)
+        distance_km: float (e.g. 5.65)
+        perceived_effort: int, between 1 (very easy) and 10 (very hard)
+        elevation_m: int, optional (e.g. 10)
+
+    If any of the fields are in the incorrect format, an exception with 422
+    status code is raised.
+    """
+    try:
+        db_activity = Activity.model_validate(activity)
+        session.add(db_activity)
+        session.commit()
+        session.refresh(db_activity)
+        return db_activity
+    except ValueError as e:
+        error_messages = [f"{err['loc'][0]} - {err['msg']}" for err in e.errors()]
+        raise HTTPException(
+            status_code=422,
+            detail=f"Format of data incorrect: {", ".join(error_messages)}"
+        )
 
 @router.patch("/{id}", response_model=Activity)
 async def update_activity(id: int, activity: ActivityUpdate, session: SessionDep):
@@ -63,11 +79,16 @@ async def update_activity(id: int, activity: ActivityUpdate, session: SessionDep
     original values remain.
 
     If the ID does not exist, an exception with 404 status code is raised.
+
+    If any of the fields are in the incorrect format, an exception with
+    422 status code is raised.
     """
     activity_db = session.get(Activity, id)
     if not activity_db:
         raise HTTPException(status_code=404, detail="Activity not found")
     activity_data = activity.model_dump(exclude_unset=True)
+    # don't need to validate against Activity because model_dump is validating against 
+    # ActivityUpdate (optional fields required which Activity doesn't have)
     activity_db.sqlmodel_update(activity_data)
     session.add(activity_db)
     session.commit()

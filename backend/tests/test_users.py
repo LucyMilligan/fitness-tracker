@@ -1,7 +1,7 @@
 from fastapi.testclient import TestClient
 from sqlmodel import Session
 
-from models import Activity, User
+from database.models import Activity, User
 
 
 class TestCreateUser:

@@ -4,7 +4,7 @@ from sqlmodel import Session, SQLModel, create_engine
 from sqlmodel.pool import StaticPool
 
 from main import app
-from database import get_session
+from database.database import get_session
 
 
 @pytest.fixture(name="session")  
@@ -40,7 +40,7 @@ def client_fixture(session: Session):
 def activity_test_1(scope="function"):
     return {
         "user_id": 1,
-        "date": "2010-10-10",
+        "date": "2010/10/10",
         "time": "10:00",
         "activity": "run",
         "activity_type": "trail",
@@ -54,7 +54,7 @@ def activity_test_1(scope="function"):
 def activity_test_2(scope="function"):
     return {
         "user_id": 1,
-        "date": "2011-10-10",
+        "date": "2011/10/10",
         "time": "10:00",
         "activity": "run",
         "activity_type": "trail",
