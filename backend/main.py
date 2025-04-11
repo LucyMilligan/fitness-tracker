@@ -7,6 +7,7 @@ from sqlalchemy.exc import IntegrityError
 
 from database.database import create_db_and_tables
 from routes import activities, users
+from fastapi.middleware.cors import CORSMiddleware
 
 
 @asynccontextmanager
@@ -17,8 +18,18 @@ async def lifespan(app: FastAPI):
 
 app = FastAPI(lifespan=lifespan)
 
+
 app.include_router(activities.router, prefix="/activities")
 app.include_router(users.router, prefix="/users")
+
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],  # or ["http://localhost:3000"]
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 
 @app.exception_handler(IntegrityError)
