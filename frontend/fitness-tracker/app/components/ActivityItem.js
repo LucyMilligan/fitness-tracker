@@ -3,23 +3,23 @@ export function ActivityItem({ activity }){
         <div className="py-3">
             <span className="font-bold">Activity: {activity.id} ({activity.activity})</span>
             <dl className="grid grid-cols-6 text-left">
-                <dt>USER ID: </dt>
+                <dt className="text-right pr-2">USER ID: </dt>
                 <dd>{activity.user_id}</dd>
-                <dt>ACTIVITY: </dt>
+                <dt className="text-right pr-2">ACTIVITY: </dt>
                 <dd>{activity.activity}</dd>
-                <dt>ACTIVITY TYPE: </dt>
+                <dt className="text-right pr-2">ACTIVITY TYPE: </dt>
                 <dd>{activity.activity_type}</dd>
-                <dt>DATE: </dt>
+                <dt className="text-right pr-2">DATE: </dt>
                 <dd>{activity.date}</dd>
-                <dt>TIME: </dt>
+                <dt className="text-right pr-2">TIME: </dt>
                 <dd>{activity.time}</dd>
-                <dt>ELEVATION: </dt>
+                <dt className="text-right pr-2">ELEVATION: </dt>
                 <dd>{activity.elevation_m} m</dd>
-                <dt>DISTANCE: </dt>
+                <dt className="text-right pr-2">DISTANCE: </dt>
                 <dd>{activity.distance_km} km</dd>
-                <dt>MOVING TIME: </dt>
+                <dt className="text-right pr-2">MOVING TIME: </dt>
                 <dd>{activity.moving_time}</dd>
-                <dt>PERCEIVED EFFORT: </dt>
+                <dt className="text-right pr-2">PERCEIVED EFFORT: </dt>
                 <dd>{activity.perceived_effort}</dd>
             </dl>
         </div>
