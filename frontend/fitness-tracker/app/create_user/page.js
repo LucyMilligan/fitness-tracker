@@ -10,9 +10,9 @@ export default function Page() {
   
   async function handleSubmit(formData) {
     const result = await createUser(formData);
-    const user_id = result.data.user_id
-
+    
     if (result.success) {
+      const user_id = result.data.user_id
       setSuccessMessage(`User added! Your user_id is ${user_id}`);
       setErrorMessage("");
     } else {
