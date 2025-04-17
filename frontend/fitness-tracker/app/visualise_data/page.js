@@ -1,8 +1,19 @@
 "use client"
 import { PaceVsElevation } from "../plots/practice_plot"
 
-// add onSubmit={handleSubmit} to form - create function for handleSubmit
-// add value and onChange to each form item
+//TODO:
+  //create a new API which returns:
+    //original data, plus pace (min/km) and speed (km/hr) - will need util functions
+    //dates in a format that can easily be converted to datetime in JS (YYYY-MM-DDT00:00:00.000Z)
+    //data between given dates (all if no dates specified)
+    //data for a given user
+  //function to fetch activities when form is submitted (similar to view)
+  //handleSubmit function
+  //Page function
+    //logic for which graph is being shown (useState)
+    //add onSubmit={handleSubmit} to form - create function for handleSubmit
+    //add value and onChange to each form item
+
 export default function Page() {
     return ( 
       <>

@@ -12,6 +12,7 @@ import { Scatter } from 'react-chartjs-2';
 
 ChartJS.register(Title, LinearScale, PointElement, LineElement, Tooltip, Legend)
 
+
 export const options = {
   plugins: {
     title: {
@@ -19,7 +20,7 @@ export const options = {
       text: "Pace vs Elevation (m) - test plot",
       color: "black",
       font: {
-        size: 14,
+        size: 16,
         weight: "bold"
       },
       padding: {
@@ -35,7 +36,10 @@ export const options = {
       title: {
         display: true,
         text: "Pace (min/km)",
-        color: "black"
+        color: "black",
+        font: {
+          size: 14
+        }
       },
       reverse: true,
       border: {
@@ -43,20 +47,31 @@ export const options = {
       grid: {
         tickColor: "black"},
       ticks: {
-        color: "black"}
+        color: "black",
+        font: {
+          size: 14
+        }
+      }
     },
     x: {
       title: {
         display: true,
         text: "Elevation (m)",
-        color: "black"
+        color: "black",
+        font: {
+          size: 14
+        }
       },
       border: {
         color: "black"},
       grid: {
         tickColor: "black"},
       ticks: {
-        color: "black"}
+        color: "black",
+        font: {
+          size: 14
+        }
+      }
     }
   }
 };
