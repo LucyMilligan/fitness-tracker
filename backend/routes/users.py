@@ -132,7 +132,7 @@ async def get_activities_by_user_id(
 
     return activities
 
-#TO DO: Add test for this endpoint
+
 @router.get("/{user_id}/activities-to-plot/", response_model=list[ActivityPlot])
 async def get_activities_to_plot_by_user_id(
     session: SessionDep,
