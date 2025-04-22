@@ -151,3 +151,64 @@ class TestGetActivitiesByUserId:
         response = client.get("/users/-1/activities")
         assert response.status_code == 404
         assert response.json()["detail"] == "No activities found"
+
+
+class TestGetActivitiesToPlotByUserId:
+    def test_endpoint_responds_with_with_additional_fields_default_dates(
+        self, session: Session, client: TestClient, activity_test_1, activity_test_2
+    ):
+        activity_1 = Activity(**activity_test_1)
+        activity_2 = Activity(**activity_test_2)
+        session.add(activity_1)
+        session.add(activity_2)
+        session.commit()
+
+        response = client.get("/users/1/activities-to-plot")
+        response_activities = response.json()
+
+        assert isinstance(response_activities, list)
+        for activity in response_activities:
+            assert activity["user_id"] == 1
+            assert "pace_str_mps" in activity
+            assert "pace_float_mps" in activity
+            assert "speed_kmphr" in activity
+            assert "formatted_time" in activity
+
+    def test_endpoint_responds_with_activities_between_given_dates(
+        self, session: Session, client: TestClient, activity_test_1, activity_test_2
+    ):
+        activity_1 = Activity(**activity_test_1)
+        activity_2 = Activity(**activity_test_2)
+        session.add(activity_1)
+        session.add(activity_2)
+        session.commit()
+
+        start_date = "2010/09/01"
+        end_date = "2010/11/01"
+        response = client.get(f"/users/1/activities-to-plot?start_date={start_date}&end_date={end_date}")
+        response_activities = response.json()
+
+        assert len(response_activities) == 1
+        for activity in response_activities:
+            assert activity["date"] < "2010/11/01" and activity["date"] > "2010/09/01"
+
+    def test_invalid_user_id_raises_404_error(self, client: TestClient):
+        response = client.get("/users/-1/activities-to-plot")
+        assert response.status_code == 404
+        assert response.json()["detail"] == "No activities found"
+
+    def test_dates_out_of_range_raises_404_error(
+        self, session: Session, client: TestClient, activity_test_1, activity_test_2
+    ):
+        activity_1 = Activity(**activity_test_1)
+        activity_2 = Activity(**activity_test_2)
+        session.add(activity_1)
+        session.add(activity_2)
+        session.commit()
+
+        start_date = "2000/09/01"
+        end_date = "2000/11/01"
+        response = client.get(f"/users/1/activities-to-plot?start_date={start_date}&end_date={end_date}")
+        
+        assert response.status_code == 404
+        assert response.json()["detail"] == "No activities found"

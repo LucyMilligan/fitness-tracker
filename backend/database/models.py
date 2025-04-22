@@ -1,6 +1,6 @@
 from datetime import datetime
 from typing import Literal
-from pydantic import field_validator
+from pydantic import BaseModel, field_validator
 from sqlmodel import Field, SQLModel
 
 SortBy = Literal[
@@ -189,4 +189,19 @@ class ActivityUpdate(SQLModel):  # optional updates to a specific activity id
             raise ValueError("Perceived_effort not a valid number in the range 1 - 10")
 
 
-#add ActivityPlot model, with additional fields and validators
+#unsure if this is needed, but added for consistency (response_model for endpoint)
+class ActivityPlot(BaseModel):
+    id: int
+    user_id: int
+    date: str
+    time: str
+    activity: str
+    activity_type: str
+    moving_time: str
+    distance_km: float
+    perceived_effort: int
+    elevation_m: int
+    pace_str_mps: str
+    pace_float_mps: float
+    speed_kmphr: float
+    formatted_time: str

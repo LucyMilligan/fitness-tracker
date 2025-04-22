@@ -6,6 +6,7 @@ from common.utils import format_query_output, update_activities_dict
 from database.database import SessionDep
 from database.models import (
     Activity,
+    ActivityPlot,
     User,
     UserCreate,
     UserPublic,
@@ -131,22 +132,20 @@ async def get_activities_by_user_id(
 
     return activities
 
-#TO DO: Add response model, with added fields
 #TO DO: Add test for this endpoint
-@router.get("/{user_id}/activities-to-plot/")
-async def get_activities_by_user_id(
+@router.get("/{user_id}/activities-to-plot/", response_model=list[ActivityPlot])
+async def get_activities_to_plot_by_user_id(
     session: SessionDep,
     user_id: int,
     start_date: str = "1981/01/01",
     end_date: str = "2081/01/01"
 ):
-    """Endpoint to get a paginated list of activities.
+    """Endpoint to get a list of activity data with added pace, speed and 
+    formatted time fields.
 
     :param user_id: user_id for which to get activities for
-    :param offset: number of activities to skip
-    :param limit: number of activities to return
-    :param sort_by: column to sort the activities by
-    :param order_by: how to order the activities (ascending or descending)
+    :param start_date: start date for which to get activities after
+    :param start_date: end date for which to get activities before
     """
     # explicitly unpacking all columns in the Activiy table (to give a list of tuples
     # instead of ORM objects)
