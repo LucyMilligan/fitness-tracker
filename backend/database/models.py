@@ -187,3 +187,6 @@ class ActivityUpdate(SQLModel):  # optional updates to a specific activity id
             return value
         except TypeError:
             raise ValueError("Perceived_effort not a valid number in the range 1 - 10")
+
+
+#add ActivityPlot model, with additional fields and validators

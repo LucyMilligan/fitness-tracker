@@ -2,6 +2,7 @@ from fastapi import APIRouter
 from fastapi import HTTPException
 from sqlalchemy import select, column
 
+from common.utils import format_query_output, update_activities_dict
 from database.database import SessionDep
 from database.models import (
     Activity,
@@ -129,3 +130,39 @@ async def get_activities_by_user_id(
         raise HTTPException(status_code=404, detail="No activities found")
 
     return activities
+
+#TO DO: Add response model, with added fields
+#TO DO: Add test for this endpoint
+@router.get("/{user_id}/activities-to-plot/")
+async def get_activities_by_user_id(
+    session: SessionDep,
+    user_id: int,
+    start_date: str = "1981/01/01",
+    end_date: str = "2081/01/01"
+):
+    """Endpoint to get a paginated list of activities.
+
+    :param user_id: user_id for which to get activities for
+    :param offset: number of activities to skip
+    :param limit: number of activities to return
+    :param sort_by: column to sort the activities by
+    :param order_by: how to order the activities (ascending or descending)
+    """
+    # explicitly unpacking all columns in the Activiy table (to give a list of tuples
+    # instead of ORM objects)
+    query = select(*Activity.__table__.c).where(
+        Activity.user_id == user_id,
+        Activity.date > start_date,
+        Activity.date < end_date,
+    )
+    activities = session.exec(query)
+    activities_data = activities.all()
+    activities_col_names = activities.keys()
+
+    formatted_activities = format_query_output(activities_data, activities_col_names)
+    modified_activities = update_activities_dict(formatted_activities)
+
+    if not modified_activities:
+        raise HTTPException(status_code=404, detail="No activities found")
+
+    return modified_activities
