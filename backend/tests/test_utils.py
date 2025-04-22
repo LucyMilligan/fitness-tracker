@@ -4,6 +4,7 @@ from common.utils import (
     calculate_time_secs, 
     convert_pace_to_float,
     convert_date_to_dt_format,
+    format_query_output,
     update_activities_dict
 )
 
@@ -150,3 +151,20 @@ class TestUpdateActivitiesDict:
         result = update_activities_dict(activities)
         assert len(result) == len(activities)
         assert result == expected
+
+
+class TestFormatQueryOutput:
+    def test_format_query_output_single_row(self):
+        data = [("test1", "test2", "test3")]
+        col_names = ["col1", "col2", "col3"]
+        result = format_query_output(data, col_names)
+        assert result == [{"col1": "test1", "col2": "test2", "col3": "test3"}]
+
+    def test_format_query_output_multiple_rows(self):
+        data = [("test1", "test2"), ("test3", "test4")]
+        col_names = ["col1", "col2"]
+        result = format_query_output(data, col_names)
+        assert result == [
+            {"col1": "test1", "col2": "test2"},
+            {"col1": "test3", "col2": "test4"},
+        ]

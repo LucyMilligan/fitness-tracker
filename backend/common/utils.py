@@ -56,3 +56,17 @@ def update_activities_dict(activities_data: List[Dict[str, Any]]) -> List[Dict[s
         activity["speed_kmphr"] = calculate_speed_km_per_hr(distance, moving_time)
         activity["formatted_time"] = convert_date_to_dt_format(date)
     return updated_activities
+
+
+def format_query_output(data: List[tuple], col_names: List) -> List[Dict[str, Any]]:
+    """formats query output results into a dictionary.
+
+    :param data: list of tuples containing the data, with each tuple representing a row
+    :param col_names: list of columns names relating to the data
+    :returns: a list of dictionaries containing the data in the format
+    [{col_1: data_1, col_2: data_2, col_3: data_3}]
+    """
+    formatted_data = []
+    for row in data:
+        formatted_data.append(dict(zip(col_names, row)))
+    return formatted_data
