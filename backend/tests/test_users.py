@@ -154,7 +154,7 @@ class TestGetActivitiesByUserId:
 
 
 class TestGetActivitiesToPlotByUserId:
-    def test_endpoint_responds_with_with_additional_fields_default_dates(
+    def test_endpoint_responds_with_additional_fields_default_dates(
         self, session: Session, client: TestClient, activity_test_1, activity_test_2
     ):
         activity_1 = Activity(**activity_test_1)
