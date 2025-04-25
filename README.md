@@ -1,4 +1,4 @@
-# fitness_tracker
+# fitness-tracker
 
 A simple web-based fitness/activity tracker application with a graphical user interface. The app allows users input activity data (e.g. a run), track their activities and give some visual insights into the users fitness.
 
