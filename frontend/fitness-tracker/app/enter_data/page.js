@@ -47,7 +47,7 @@ export default function Page() {
             {/* Date input */}  
             <div className="flex items-center gap-4">
               <label htmlFor="date" className="w-50 text-right">Date:</label>          
-              <input type="text" name="date" title="format YYYY/MM/DD" placeholder="2025/01/01" className="border border-teal-800 bg-transparent rounded outline-none focus-within:border-teal-600"></input>
+              <input type="text" name="date" title="format YYYY-MM-DD" placeholder="2025-01-01" className="border border-teal-800 bg-transparent rounded outline-none focus-within:border-teal-600"></input>
             </div>
 
             {/* Time input */}  

@@ -137,8 +137,8 @@ async def get_activities_by_user_id(
 async def get_activities_to_plot_by_user_id(
     session: SessionDep,
     user_id: int,
-    start_date: str = "1981/01/01",
-    end_date: str = "2081/01/01"
+    start_date: str = "1981-01-01",
+    end_date: str = "2081-01-01"
 ):
     """Endpoint to get a list of activity data with added pace, speed and 
     formatted time fields.

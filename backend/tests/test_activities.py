@@ -110,7 +110,7 @@ class TestCreateActivity:
     def test_endpoint_returns_201_status_code_on_success(self, client: TestClient):
         activity_test = {
             "user_id": 1,
-            "date": "2025/10/10",
+            "date": "2025-10-10",
             "time": "17:30",
             "activity": "run",
             "activity_type": "trail",

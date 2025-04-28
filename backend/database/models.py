@@ -77,10 +77,10 @@ class Activity(SQLModel, table=True):
     @classmethod
     def date_valid(cls, value: str):
         try:
-            datetime.strptime(value, "%Y/%m/%d")
+            datetime.strptime(value, "%Y-%m-%d")
             return value
         except (ValueError, TypeError):
-            raise ValueError("Date does not match format 'YYYY/MM/DD'")
+            raise ValueError("Date does not match format 'YYYY-MM-DD'")
 
     @field_validator("time", mode="before")
     @classmethod
@@ -147,10 +147,10 @@ class ActivityUpdate(SQLModel):  # optional updates to a specific activity id
     @classmethod
     def date_valid(cls, value: str):
         try:
-            datetime.strptime(value, "%Y/%m/%d")
+            datetime.strptime(value, "%Y-%m-%d")
             return value
         except (ValueError, TypeError):
-            raise ValueError("Date does not match format 'YYYY/MM/DD'")
+            raise ValueError("Date does not match format 'YYYY-MM-DD'")
 
     @field_validator("time", mode="before")
     @classmethod

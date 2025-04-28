@@ -183,14 +183,14 @@ class TestGetActivitiesToPlotByUserId:
         session.add(activity_2)
         session.commit()
 
-        start_date = "2010/09/01"
-        end_date = "2010/11/01"
+        start_date = "2010-09-01"
+        end_date = "2010-11-01"
         response = client.get(f"/users/1/activities-to-plot?start_date={start_date}&end_date={end_date}")
         response_activities = response.json()
 
         assert len(response_activities) == 1
         for activity in response_activities:
-            assert activity["date"] < "2010/11/01" and activity["date"] > "2010/09/01"
+            assert activity["date"] < "2010-11-01" and activity["date"] > "2010-09-01"
 
     def test_invalid_user_id_raises_404_error(self, client: TestClient):
         response = client.get("/users/-1/activities-to-plot")

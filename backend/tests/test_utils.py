@@ -65,6 +65,11 @@ class TestConvertDateToDtFormat:
         result = convert_date_to_dt_format(pace_string)
         assert result == "2025-03-25T00:00:00.000Z"
 
+    def test_convert_date_to_dt_format_dashes(self):
+        pace_string = "2025-03-25"
+        result = convert_date_to_dt_format(pace_string)
+        assert result == "2025-03-25T00:00:00.000Z"
+
 
 class TestCalculateSpeed:
     def test_calculate_speed_km_per_hr_basic(self):

@@ -53,7 +53,7 @@ async def create_activity(activity: ActivityCreate, session: SessionDep):
     should be in the format:
 
         user_id: int (e.g. 1)
-        date: str, in the format "YYYY/MM/DD" (e.g. "2025/02/24")
+        date: str, in the format "YYYY-MM-DD" (e.g. "2025-02-24")
         time: str, in the format "hh:mm" (e.g. "17:45")
         activity: str (e.g. "run")
         activity_type: str (e.g. "trail")

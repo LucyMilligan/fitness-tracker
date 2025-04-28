@@ -37,10 +37,14 @@ def convert_pace_to_float(pace_string: str) -> float:
 
 
 def convert_date_to_dt_format(date: str) -> str:
-    """converts date string (original format "YYYY/MM/DD") into ISO 8601 format"""
-    year, month, day = date.split("/")
-    formatted_date_str = f"{year}-{month}-{day}T00:00:00.000Z"
-    return formatted_date_str
+    """converts date string (original format "YYYY-MM-DD" or "YYYY/MM/DD") into ISO 8601 format"""
+    try:
+        year, month, day = date.split("/")
+        formatted_date_str = f"{year}-{month}-{day}T00:00:00.000Z"
+        return formatted_date_str
+    except ValueError:
+        formatted_date_str = f"{date}T00:00:00.000Z"
+        return formatted_date_str
 
 
 def update_activities_dict(activities_data: List[Dict[str, Any]]) -> List[Dict[str, Any]]:
