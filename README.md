@@ -39,9 +39,9 @@ Create the database by running the following in the terminal:
 
 ```psql -f database/create_db.sql```
 
-Run the API (changing the port number if necessary):
+Run the API:
 
-```uvicorn main:app --reload --port 8080```
+```python main.py```
 
 Seed the database:
 
@@ -57,9 +57,9 @@ To run the backend tests:
 
 ### Run API
 
-To run the API, run the following from the backend directory (port 8080 can be replaced with another if necessary):
+To run the API, run the following from the backend directory:
 
-```uvicorn main:app --reload --port 8080```
+```python main.py```
 
 Open [http://localhost:8080/docs](http://localhost:8080/docs) with your browser to manually test the API endpoints.
 
