@@ -85,36 +85,6 @@ export default function Page() {
             </div>
 
             {/* start date */}
-            {/* <div className="flex justify-end items-center gap-4">
-              <label htmlFor="start_date" className="w-37 text-right font-12">Start date:</label> 
-              <input 
-                type="text"
-                name="start_date"
-                title="format YYYY-MM-DD"
-                placeholder="2025-01-01"
-                value={startDate}
-                onChange={(formData) => setStartDate(formData.target.value)}
-                className="w-40 border border-teal-800 bg-transparent rounded outline-none focus-within:border-teal-600"
-                >
-              </input>
-            </div> */}
-
-            {/* end date */}
-            {/* <div className="flex justify-end items-center gap-4">
-              <label htmlFor="end_date" className="w-37 text-right font-12">End date:</label> 
-              <input 
-                type="text"
-                name="end_date"
-                title="format YYYY-MM-DD"
-                placeholder="2025-01-30"
-                value={endDate}
-                onChange={(formData) => setEndDate(formData.target.value)}
-                className="w-40 border border-teal-800 bg-transparent rounded outline-none focus-within:border-teal-600"
-                >
-              </input>
-            </div> */}
-
-            {/* start date */}
             <div className="flex justify-end items-center gap-4">
               <label htmlFor="start_date" className="w-37 text-right font-12">Start date:</label> 
               <input 
