@@ -101,7 +101,7 @@ class TestUpdateActivitiesDict:
                 "pace_str_mps": "6:53",
                 "pace_float_mps": 6.88,
                 "speed_kmphr": 8.71,
-                "formatted_time": "2025-03-25T00:00:00.000Z"
+                "formatted_date": "2025-03-25T00:00:00.000Z"
             }
         ]
         result = update_activities_dict(activities)
@@ -134,7 +134,7 @@ class TestUpdateActivitiesDict:
                 "pace_str_mps": "6:00",
                 "pace_float_mps": 6.00,
                 "speed_kmphr": 10.00,
-                "formatted_time": "2025-04-25T00:00:00.000Z"
+                "formatted_date": "2025-04-25T00:00:00.000Z"
             },
             {
                 "activity": "run",
@@ -145,7 +145,7 @@ class TestUpdateActivitiesDict:
                 "pace_str_mps": "6:53",
                 "pace_float_mps": 6.88,
                 "speed_kmphr": 8.71,
-                "formatted_time": "2025-03-25T00:00:00.000Z"
+                "formatted_date": "2025-03-25T00:00:00.000Z"
             }
         ]
         result = update_activities_dict(activities)

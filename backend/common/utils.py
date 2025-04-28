@@ -54,7 +54,7 @@ def update_activities_dict(activities_data: List[Dict[str, Any]]) -> List[Dict[s
         activity["pace_str_mps"] = calculate_pace_mins_per_km(distance, moving_time)
         activity["pace_float_mps"] = convert_pace_to_float(activity["pace_str_mps"])
         activity["speed_kmphr"] = calculate_speed_km_per_hr(distance, moving_time)
-        activity["formatted_time"] = convert_date_to_dt_format(date)
+        activity["formatted_date"] = convert_date_to_dt_format(date)
     return updated_activities
 
 

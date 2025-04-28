@@ -172,7 +172,7 @@ class TestGetActivitiesToPlotByUserId:
             assert "pace_str_mps" in activity
             assert "pace_float_mps" in activity
             assert "speed_kmphr" in activity
-            assert "formatted_time" in activity
+            assert "formatted_date" in activity
 
     def test_endpoint_responds_with_activities_between_given_dates(
         self, session: Session, client: TestClient, activity_test_1, activity_test_2

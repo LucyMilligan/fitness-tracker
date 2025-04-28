@@ -204,4 +204,4 @@ class ActivityPlot(BaseModel):
     pace_str_mps: str
     pace_float_mps: float
     speed_kmphr: float
-    formatted_time: str
+    formatted_date: str
