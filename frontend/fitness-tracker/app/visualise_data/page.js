@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { PaceVsElevation } from "../plots/practice_plot"
+import { ActivityItem } from "../components/ActivityItem"
 
 //TODO:
   //function to convert data into xy plot format [{x: 180, y: 7.2}, {x: 70, y: 6.6}]
@@ -11,8 +12,8 @@ import { PaceVsElevation } from "../plots/practice_plot"
 export default function Page() {
   
   const [activities, setActivities] = useState([]); //may not need
-  const [startDate, setStartDate] = useState("1981-01-01");
-  const [endDate, setEndDate] = useState("2081-01-01");
+  const [startDate, setStartDate] = useState("");
+  const [endDate, setEndDate] = useState("");
   const [userId, setUserId] = useState("");
   const [yAxis, setyAxis] = useState("");
   const [xAxis, setxAxis] = useState("");
@@ -21,13 +22,21 @@ export default function Page() {
 
   async function fetchActivities() {
     try {
-      const url = `http://localhost:8080/users/${userId}/activities?start_date=${startDate}&end_date=${endDate}`
+      let url = `http://localhost:8080/users/${userId}/activities-to-plot/`
     
+      if (startDate.trim() && endDate.trim()) {
+        url += `?start_date=${startDate}&end_date=${endDate}`
+      }
+
       const response = await fetch(url)
       const data = await response.json()
 
       if (startDate > endDate) {
         return { success: false, error: `No activity data to plot. Please enter correct start and end dates.`}
+      }
+
+      if (!userId) {
+        return { success: false, error: `Please enter a User ID.`}
       }
 
       if (!response.ok) {
@@ -40,7 +49,7 @@ export default function Page() {
 
     } catch (error) {
       console.error("API Error", error)
-      return { success: false, error: `No activity data to plot for user ID ${userId} between ${startDate} and ${endDate}. Please try again.`}
+      return { success: false, error: `No activity data to plot for user ID ${userId} between the given dates. Please try again.`}
     }
   }
 
@@ -76,14 +85,44 @@ export default function Page() {
             </div>
 
             {/* start date */}
+            {/* <div className="flex justify-end items-center gap-4">
+              <label htmlFor="start_date" className="w-37 text-right font-12">Start date:</label> 
+              <input 
+                type="text"
+                name="start_date"
+                title="format YYYY-MM-DD"
+                placeholder="2025-01-01"
+                value={startDate}
+                onChange={(formData) => setStartDate(formData.target.value)}
+                className="w-40 border border-teal-800 bg-transparent rounded outline-none focus-within:border-teal-600"
+                >
+              </input>
+            </div> */}
+
+            {/* end date */}
+            {/* <div className="flex justify-end items-center gap-4">
+              <label htmlFor="end_date" className="w-37 text-right font-12">End date:</label> 
+              <input 
+                type="text"
+                name="end_date"
+                title="format YYYY-MM-DD"
+                placeholder="2025-01-30"
+                value={endDate}
+                onChange={(formData) => setEndDate(formData.target.value)}
+                className="w-40 border border-teal-800 bg-transparent rounded outline-none focus-within:border-teal-600"
+                >
+              </input>
+            </div> */}
+
+            {/* start date */}
             <div className="flex justify-end items-center gap-4">
               <label htmlFor="start_date" className="w-37 text-right font-12">Start date:</label> 
               <input 
                 type="date"
                 id="start_date"
                 name="start_date"
-                min="2020-01-01"
-                max="2030-01-01"
+                min="1981-01-01"
+                max="2081-01-01"
                 value={startDate} //does the date have a value??
                 onChange={(formData) => setStartDate(formData.target.value)} //does the date have a value??
                 className="w-40 border border-teal-800 bg-transparent rounded outline-none focus-within:border-teal-600"
@@ -98,8 +137,8 @@ export default function Page() {
                 type="date"
                 id="end_date"
                 name="end_date"
-                min="2020-01-01"
-                max="2030-01-01"
+                min="1981-01-01"
+                max="2081-01-01"
                 value={endDate} //does the date have a value??
                 onChange={(formData) => setEndDate(formData.target.value)} //does the date have a value??
                 className="w-40 border border-teal-800 bg-transparent rounded outline-none focus-within:border-teal-600"
@@ -155,6 +194,12 @@ export default function Page() {
           <div className="pt-15">
             <PaceVsElevation />
           </div>
+
+          <ul className="text-center">
+              {activities.map(activity => (
+                  <ActivityItem key={activity.id} activity={activity} />
+              ))}
+          </ul>
         </main>
       </>
     )
