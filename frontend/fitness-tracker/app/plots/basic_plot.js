@@ -12,20 +12,12 @@ import { Scatter } from 'react-chartjs-2';
 
 ChartJS.register(Title, LinearScale, PointElement, LineElement, Tooltip, Legend)
 
-function chartTitle() {
-  let chartTitle = "Pace vs Elevation (m) - test plot"
-  return chartTitle
-}
-
-let yAxisTitle = "Pace (min/km)"
-let xAxisTitle = "Elevation (m)"
-let chartData = [{x: 180, y: 7.2}, {x: 70, y: 6.6}, {x: 50, y: 6.5}, {x: 30, y: 5.8}, {x: 43, y: 6.45}, {x: 90, y: 7.4}]
 
 export const options = {
   plugins: {
     title: {
       display: true,
-      text: chartTitle(),
+      text: "Pace vs Elevation (m) - test plot",
       color: "black",
       font: {
         size: 16,
@@ -43,7 +35,7 @@ export const options = {
     y: {
       title: {
         display: true,
-        text: yAxisTitle,
+        text: "Pace (min/km)",
         color: "black",
         font: {
           size: 14
@@ -64,7 +56,7 @@ export const options = {
     x: {
       title: {
         display: true,
-        text: xAxisTitle,
+        text: "Elevation (m)",
         color: "black",
         font: {
           size: 14
@@ -87,8 +79,8 @@ export const options = {
 export const data = {
   datasets: [
     {
-      label: chartTitle,
-      data: chartData,
+      label: "Pace vs Elevation (test plot)",
+      data: [{x: 100, y: 7.2}, {x: 70, y: 6.6}, {x: 50, y: 6.5}, {x: 30, y: 5.8}, {x: 43, y: 6.45}, {x: 90, y: 7.4}],
       backgroundColor: "rgb(43, 125, 17)"
     }
   ]
