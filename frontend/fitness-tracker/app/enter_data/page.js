@@ -29,31 +29,59 @@ export default function Page() {
             {/* User_id input */}  
             <div className="flex items-center gap-4">
               <label htmlFor="user_id" className="w-50 text-right">User ID:</label>          
-              <input type="text" name="user_id" title="User ID number" placeholder="1" className="border border-teal-800 bg-transparent rounded outline-none focus-within:border-teal-600"></input>
+              <input 
+                type="text" 
+                name="user_id" 
+                title="User ID number" 
+                placeholder="1" 
+                className="border border-teal-800 bg-transparent rounded outline-none focus-within:border-teal-600"></input>
             </div>
 
             {/* Activity input */}
             <div className="flex items-center gap-4">
               <label htmlFor="activity" className="w-50 text-right">Activity:</label>
-              <input type="text" name="activity" title="Sport - run, bike" placeholder="run" className="border border-teal-800 bg-transparent rounded outline-none focus-within:border-teal-600"></input>
+              <select 
+                name="activity"
+                placeholder="run" 
+                className="w-45 border border-teal-800 bg-transparent rounded outline-none focus-within:border-teal-600"
+                >
+                <option value="run">Run</option>
+              </select>
             </div>
 
             {/* Activity type input */}  
             <div className="flex items-center gap-4">
               <label htmlFor="activity_type" className="w-50 text-right">Type of activity:</label>          
-              <input type="text" name="activity_type" title="Type of activity - trail, road" placeholder="road" className="border border-teal-800 bg-transparent rounded outline-none focus-within:border-teal-600"></input>
+              <select 
+                name="activity_type"
+                placeholder="road" 
+                className="w-45 border border-teal-800 bg-transparent rounded outline-none focus-within:border-teal-600"
+                >
+                <option value="road">Road</option>
+                <option value="trail">Trail</option>
+              </select>
             </div>            
 
             {/* Date input */}  
             <div className="flex items-center gap-4">
               <label htmlFor="date" className="w-50 text-right">Date:</label>          
-              <input type="text" name="date" title="format YYYY-MM-DD" placeholder="2025-01-01" className="border border-teal-800 bg-transparent rounded outline-none focus-within:border-teal-600"></input>
+              <input 
+                type="date" 
+                name="date" 
+                min="1981-01-01"
+                max="2081-01-01"
+                className="w-45 border border-teal-800 bg-transparent rounded outline-none focus-within:border-teal-600"></input>
             </div>
 
             {/* Time input */}  
             <div className="flex items-center gap-4">
               <label htmlFor="time" className="w-50 text-right">Time:</label>          
-              <input type="text" name="time" title="format hh:mm (24hr)" placeholder="17:30" className="border border-teal-800 bg-transparent rounded outline-none focus-within:border-teal-600"></input>
+              <input 
+                type="time" 
+                name="time"
+                title="hh:mm"
+                value="17:30"
+                className="w-45 border border-teal-800 bg-transparent rounded outline-none focus-within:border-teal-600"></input>
             </div> 
 
             {/* Elevation input */}  
@@ -71,14 +99,36 @@ export default function Page() {
             {/* Moving time input */}  
             <div className="flex items-center gap-4">
               <label htmlFor="moving_time" className="w-50 text-right">Moving time:</label>          
-              <input type="text" name="moving_time" title="format hh:mm:ss" placeholder="00:32:52" className="border border-teal-800 bg-transparent rounded outline-none focus-within:border-teal-600"></input>
+              <input 
+                type="time" 
+                name="moving_time" 
+                title="hh:mm:ss" 
+                step="1" //steps in increments of 1 second
+                className="w-45 border border-teal-800 bg-transparent rounded outline-none focus-within:border-teal-600">
+              </input>
             </div>  
 
             {/* Perceived effort input */}  
             <div className="flex items-center gap-4">
-              <label htmlFor="perceived_effort" className="w-50 text-right">Perceived effort:</label>          
-              <input type="text" name="perceived_effort" title="1 (very easy) to 10 (very hard)" placeholder="6" className="border border-teal-800 bg-transparent rounded outline-none focus-within:border-teal-600"></input>
-            </div>    
+              <label htmlFor="perceived_effort" className="w-50 text-right">Perceived effort:</label>
+              <select
+                name="perceived_effort"
+                placeholder="6"
+                title="1 (very easy) to 10 (very hard)" 
+                className="w-45 border border-teal-800 bg-transparent rounded outline-none focus-within:border-teal-600"
+                >
+                <option value="1">1 (extremely easy)</option>
+                <option value="2">2 (very easy)</option>
+                <option value="3">3 (easy)</option>
+                <option value="4">4 (moderately easy)</option>
+                <option value="5">5 (moderate)</option>
+                <option value="6">6 (moderately hard)</option>
+                <option value="7">7 (hard)</option>
+                <option value="8">8 (very hard)</option>
+                <option value="9">9 (very very hard)</option>
+                <option value="10">10 (maximum effort)</option>
+              </select>
+            </div>   
 
             {/* Buttons */}
             <div className="flex gap-1 pt-6 pl-38 justify-center items-center">
