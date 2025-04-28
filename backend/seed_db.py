@@ -20,7 +20,7 @@ def create_users():
 def create_activities():
     activity_1 = Activity(
         user_id=1,
-        date="2025/03/25",
+        date="2025-03-25",
         time="20:16",
         activity="run",
         activity_type="road",
@@ -31,7 +31,7 @@ def create_activities():
     )
     activity_2 = Activity(
         user_id=1,
-        date="2025/03/23",
+        date="2025-03-23",
         time="10:08",
         activity="run",
         activity_type="road",
@@ -42,7 +42,7 @@ def create_activities():
     )
     activity_3 = Activity(
         user_id=1,
-        date="2025/03/18",
+        date="2025-03-18",
         time="14:40",
         activity="run",
         activity_type="trail",
@@ -53,7 +53,7 @@ def create_activities():
     )
     activity_4 = Activity(
         user_id=1,
-        date="2025/03/16",
+        date="2025-03-16",
         time="09:02",
         activity="run",
         activity_type="road",
@@ -64,7 +64,7 @@ def create_activities():
     )
     activity_5 = Activity(
         user_id=1,
-        date="2025/03/12",
+        date="2025-03-12",
         time="17:02",
         activity="run",
         activity_type="road",
@@ -75,7 +75,7 @@ def create_activities():
     )
     activity_5 = Activity(
         user_id=1,
-        date="2025/03/05",
+        date="2025-03-05",
         time="17:45",
         activity="run",
         activity_type="road",
@@ -86,7 +86,7 @@ def create_activities():
     )
     activity_6 = Activity(
         user_id=1,
-        date="2025/02/27",
+        date="2025-02-27",
         time="17:45",
         activity="run",
         activity_type="road",
@@ -97,7 +97,7 @@ def create_activities():
     )
     activity_7 = Activity(
         user_id=1,
-        date="2025/02/22",
+        date="2025-02-22",
         time="17:12",
         activity="run",
         activity_type="road",
@@ -108,7 +108,7 @@ def create_activities():
     )
     activity_8 = Activity(
         user_id=1,
-        date="2025/02/17",
+        date="2025-02-17",
         time="17:34",
         activity="run",
         activity_type="road",
@@ -119,7 +119,7 @@ def create_activities():
     )
     activity_9 = Activity(
         user_id=1,
-        date="2025/02/10",
+        date="2025-02-10",
         time="17:28",
         activity="run",
         activity_type="road",
@@ -130,7 +130,7 @@ def create_activities():
     )
     activity_10 = Activity(
         user_id=1,
-        date="2025/02/03",
+        date="2025-02-03",
         time="17:29",
         activity="run",
         activity_type="road",
@@ -141,7 +141,7 @@ def create_activities():
     )
     activity_11 = Activity(
         user_id=1,
-        date="2025/01/29",
+        date="2025-01-29",
         time="17:35",
         activity="run",
         activity_type="road",
