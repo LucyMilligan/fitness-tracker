@@ -1,13 +1,10 @@
 "use client"
 
-import { useEffect, useState } from "react";
-import { PaceVsElevation } from "../plots/practice_plot"
+import { useState } from "react";
+import { ScatterPlot } from "../plots/scatter_plot"
 import { ActivityItem } from "../components/ActivityItem"
 import getXYData from "../client_functions/getXYData";
 
-//TODO:
-  //Page function
-    //logic for which graph is being shown (useState)
 
 export default function Page() {
   
@@ -18,7 +15,11 @@ export default function Page() {
   const [yAxis, setyAxis] = useState("pace_float_mps");
   const [xAxis, setxAxis] = useState("distance_km");
   const [errorMessage, setErrorMessage] = useState("");
-  //plotData = [{x: 180, y: 7.2}, {x: 70, y: 6.6}]
+  const [plotData, setPlotData] = useState(null);
+  const [plotYAxis, setPlotYAxis] = useState("")
+  const [plotXAxis, setPlotXAxis] = useState("")
+  const [plotTitle, setPlotTitle] = useState("")
+
 
   async function fetchActivities() {
     try {
@@ -59,13 +60,56 @@ export default function Page() {
 
     if (result.success) {
       setErrorMessage("")
+      setPlotData(await getPlotData())
+      setPlotYAxis(await getPlotYAxis())
+      setPlotXAxis(await getPlotXAxis())
+      setPlotTitle(await getPlotTitle())
     } else {
       setErrorMessage(result.error)
     }
   }
 
-  // const xyData = getXYData(activities, yAxis, xAxis)
-  // console.log(xyData)
+
+  async function getPlotData() {
+    const xyData = getXYData(activities, yAxis, xAxis)
+    return xyData
+  }
+
+  async function getPlotYAxis() {
+    let yAxisTitle = ""
+    switch(yAxis) {
+      case "pace_float_mps":
+        yAxisTitle = "Pace (min/km)"
+        break
+      case "speed_kmphr":
+        yAxisTitle = "Speed (km/hr)"
+        break
+    }
+    return yAxisTitle
+  }
+
+  async function getPlotXAxis() {
+    let xAxisTitle = ""
+    switch(xAxis) {
+      case "distance_km":
+        xAxisTitle = "Distance (km)"
+        break
+      case "elevation_m":
+        xAxisTitle = "Elevation (m)"
+        break
+      case "perceived_effort":
+        xAxisTitle = "Perceived Effort (1 [very easy] - 10 [maximum effort])"
+        break
+    }
+    return xAxisTitle
+  }
+
+  async function getPlotTitle() {
+    const xAxisTitle = await getPlotXAxis()
+    const yAxisTitle = await getPlotYAxis()
+    const plotTitle = `${yAxisTitle} vs ${xAxisTitle}`
+    return plotTitle
+  }
 
   return ( 
       <>
@@ -147,7 +191,7 @@ export default function Page() {
                 <option value="distance_km">Distance (km)</option>
                 <option value="elevation_m">Elevation (m)</option>
                 <option value="perceived_effort">Perceived effort</option>
-                <option value="formatted_date">Date</option>
+                {/* <option value="formatted_date">Date</option> */}
               </select>
             </div>
 
@@ -165,7 +209,7 @@ export default function Page() {
           </form>
 
           <div className="pt-15">
-            <PaceVsElevation />
+            <ScatterPlot chartTitle={plotTitle} yAxisTitle={plotYAxis} xAxisTitle={plotXAxis} chartData={plotData}/>
           </div>
 
           {/* sense check that data correctly fetched */}
