@@ -29,28 +29,27 @@ export default function Page() {
         url += `?start_date=${startDate}&end_date=${endDate}`
       }
 
-      const response = await fetch(url)
-      const data = await response.json()
-
       if (startDate > endDate) {
         return { success: false, error: `No activity data to plot. Please enter correct start and end dates.`}
       }
-
+      
       if (!userId) {
         return { success: false, error: `Please enter a User ID.`}
       }
 
+      const response = await fetch(url)
+      const data = await response.json()
+
       if (!response.ok) {
-        setActivities([]) 
-        throw new Error(`HTTP error! Status: ${response.status}`)
-      } else {
-        setActivities(data)
-        return { success: true }
+        return { success: false, error: `No activity data to plot for User ID ${userId} between the given dates. Please try again.`}
       }
+      
+      setActivities(data)
+      return { success: true, data }
 
     } catch (error) {
       console.error("API Error", error)
-      return { success: false, error: `No activity data to plot for User ID ${userId} between the given dates. Please try again.`}
+      return { success: false, error: `Oops, something went wrong on our end. Not able to plot activity data right now.`}
     }
   }
 
@@ -59,20 +58,16 @@ export default function Page() {
     const result = await fetchActivities()
 
     if (result.success) {
+      const newActities = result.data
       setErrorMessage("")
-      setPlotData(await getPlotData())
+
+      setPlotData(getXYData(newActities, yAxis, xAxis))
       setPlotYAxis(await getPlotYAxis())
       setPlotXAxis(await getPlotXAxis())
       setPlotTitle(await getPlotTitle())
     } else {
       setErrorMessage(result.error)
     }
-  }
-
-
-  async function getPlotData() {
-    const xyData = getXYData(activities, yAxis, xAxis)
-    return xyData
   }
 
   async function getPlotYAxis() {
