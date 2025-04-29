@@ -3,19 +3,19 @@
 import { useState } from "react";
 import { ScatterPlot } from "../plots/scatter_plot"
 import { ActivityItem } from "../components/ActivityItem"
-import getXYData from "../client_functions/getXYData";
+import getXYData from "../client_functions/getXYData"
 
 
 export default function Page() {
   
-  const [activities, setActivities] = useState([]); //may not need
-  const [startDate, setStartDate] = useState("");
-  const [endDate, setEndDate] = useState("");
-  const [userId, setUserId] = useState("");
-  const [yAxis, setyAxis] = useState("pace_float_mps");
-  const [xAxis, setxAxis] = useState("distance_km");
-  const [errorMessage, setErrorMessage] = useState("");
-  const [plotData, setPlotData] = useState(null);
+  const [activities, setActivities] = useState([])
+  const [startDate, setStartDate] = useState("")
+  const [endDate, setEndDate] = useState("")
+  const [userId, setUserId] = useState("")
+  const [yAxis, setyAxis] = useState("pace_float_mps")
+  const [xAxis, setxAxis] = useState("distance_km")
+  const [errorMessage, setErrorMessage] = useState("")
+  const [plotData, setPlotData] = useState(null)
   const [plotYAxis, setPlotYAxis] = useState("")
   const [plotXAxis, setPlotXAxis] = useState("")
   const [plotTitle, setPlotTitle] = useState("")
