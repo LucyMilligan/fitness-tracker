@@ -3,9 +3,9 @@
 import { useEffect, useState } from "react";
 import { PaceVsElevation } from "../plots/practice_plot"
 import { ActivityItem } from "../components/ActivityItem"
+import getXYData from "../client_functions/getXYData";
 
 //TODO:
-  //function to convert data into xy plot format [{x: 180, y: 7.2}, {x: 70, y: 6.6}]
   //Page function
     //logic for which graph is being shown (useState)
 
@@ -15,8 +15,8 @@ export default function Page() {
   const [startDate, setStartDate] = useState("");
   const [endDate, setEndDate] = useState("");
   const [userId, setUserId] = useState("");
-  const [yAxis, setyAxis] = useState("");
-  const [xAxis, setxAxis] = useState("");
+  const [yAxis, setyAxis] = useState("pace_float_mps");
+  const [xAxis, setxAxis] = useState("distance_km");
   const [errorMessage, setErrorMessage] = useState("");
   //plotData = [{x: 180, y: 7.2}, {x: 70, y: 6.6}]
 
@@ -49,7 +49,7 @@ export default function Page() {
 
     } catch (error) {
       console.error("API Error", error)
-      return { success: false, error: `No activity data to plot for user ID ${userId} between the given dates. Please try again.`}
+      return { success: false, error: `No activity data to plot for User ID ${userId} between the given dates. Please try again.`}
     }
   }
 
@@ -63,6 +63,9 @@ export default function Page() {
       setErrorMessage(result.error)
     }
   }
+
+  // const xyData = getXYData(activities, yAxis, xAxis)
+  // console.log(xyData)
 
   return ( 
       <>
@@ -126,8 +129,8 @@ export default function Page() {
                 onChange={(formData) => setyAxis(formData.target.value)}
                 className="w-40 border border-teal-800 bg-transparent rounded outline-none focus-within:border-teal-600"
                 >
-                <option value="pace">Pace (min/km)</option>
-                <option value="speed">Speed (km/hr)</option>
+                <option value="pace_float_mps">Pace (min/km)</option>
+                <option value="speed_kmphr">Speed (km/hr)</option>
               </select>
             </div>
 
@@ -141,10 +144,10 @@ export default function Page() {
                 onChange={(formData) => setxAxis(formData.target.value)}
                 className="w-40 border border-teal-800 bg-transparent rounded outline-none focus-within:border-teal-600"
                 >
-                <option value="distance">Distance (km)</option>
-                <option value="elevation">Elevation (m)</option>
+                <option value="distance_km">Distance (km)</option>
+                <option value="elevation_m">Elevation (m)</option>
                 <option value="perceived_effort">Perceived effort</option>
-                <option value="date">Date</option>
+                <option value="formatted_date">Date</option>
               </select>
             </div>
 
@@ -165,11 +168,12 @@ export default function Page() {
             <PaceVsElevation />
           </div>
 
-          <ul className="text-center">
+          {/* sense check that data correctly fetched */}
+          {/* <ul className="text-center">
               {activities.map(activity => (
                   <ActivityItem key={activity.id} activity={activity} />
               ))}
-          </ul>
+          </ul> */}
         </main>
       </>
     )

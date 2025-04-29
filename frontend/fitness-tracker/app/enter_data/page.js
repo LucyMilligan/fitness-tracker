@@ -80,7 +80,6 @@ export default function Page() {
                 type="time" 
                 name="time"
                 title="hh:mm"
-                value="17:30"
                 className="w-45 border border-teal-800 bg-transparent rounded outline-none focus-within:border-teal-600"></input>
             </div> 
 
