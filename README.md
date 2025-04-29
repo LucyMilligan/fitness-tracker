@@ -80,7 +80,7 @@ Open [http://localhost:3000](http://localhost:3000) with your browser to see the
 ## Further Improvements / TODO
 
 Additional features to be implemented:
-- visualise page - create the plots based on data from API's
+- add additional plots / plot options
 - add additional pages to update or delete users / activities (API's exist but need the frontend)
 - use docker?
 - add to a website domain
