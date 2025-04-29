@@ -5,6 +5,9 @@ import { ScatterPlot } from "../plots/scatter_plot"
 import { ActivityItem } from "../components/ActivityItem"
 import getXYData from "../client_functions/getXYData"
 
+//TODO:
+  //make plot scale according to the size of the page
+  //add date as an xaxis option
 
 export default function Page() {
   

@@ -13,7 +13,12 @@ import { Scatter } from 'react-chartjs-2';
 ChartJS.register(Title, LinearScale, PointElement, LineElement, Tooltip, Legend)
 
 export function ScatterPlot({chartTitle, yAxisTitle, xAxisTitle, chartData}) {
-  //TODO: change y axis reverse if speed vs pace
+  //reverse y axis for pace (smaller number = faster), but not for speed
+  let reversed = false
+  if (yAxisTitle == "Pace (min/km)") {
+    reversed = true
+  }
+
   const options = {
     plugins: {
       title: {
@@ -42,7 +47,7 @@ export function ScatterPlot({chartTitle, yAxisTitle, xAxisTitle, chartData}) {
             size: 14
           }
         },
-        reverse: true,
+        reverse: reversed,
         border: {
           color: "black"},
         grid: {
