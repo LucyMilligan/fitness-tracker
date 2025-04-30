@@ -1,13 +1,12 @@
 "use client"
 
 import { useState } from "react";
-import { ScatterPlot } from "../plots/scatter_plot"
+import { Plot } from "../plots/scatter_plot"
 import { ActivityItem } from "../components/ActivityItem"
 import getXYData from "../client_functions/getXYData"
 
 //TODO:
   //make plot scale according to the size of the page
-  //add date as an xaxis option
 
 export default function Page() {
   
@@ -97,6 +96,9 @@ export default function Page() {
         break
       case "perceived_effort":
         xAxisTitle = "Perceived Effort (1 [very easy] - 10 [maximum effort])"
+        break
+      case "date":
+        xAxisTitle = "Date"
         break
     }
     return xAxisTitle
@@ -189,7 +191,7 @@ export default function Page() {
                 <option value="distance_km">Distance (km)</option>
                 <option value="elevation_m">Elevation (m)</option>
                 <option value="perceived_effort">Perceived effort</option>
-                {/* <option value="formatted_date">Date</option> */}
+                <option value="date">Date</option>
               </select>
             </div>
 
@@ -207,7 +209,7 @@ export default function Page() {
           </form>
 
           <div className="pt-15">
-            <ScatterPlot chartTitle={plotTitle} yAxisTitle={plotYAxis} xAxisTitle={plotXAxis} chartData={plotData}/>
+            <Plot chartTitle={plotTitle} yAxisTitle={plotYAxis} xAxisTitle={plotXAxis} chartData={plotData}/>
           </div>
 
           {/* sense check that data correctly fetched */}
