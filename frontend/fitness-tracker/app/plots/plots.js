@@ -26,6 +26,8 @@ function isReversed(yAxisTitle) {
 function scatterPlot(chartTitle, yAxisTitle, xAxisTitle, chartData) {
   const options = {
     plugins: {
+      responsive: "true",
+      maintainAspectRatio: "false",
       title: {
         display: true,
         text: chartTitle,

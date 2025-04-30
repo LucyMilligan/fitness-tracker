@@ -1,12 +1,9 @@
 "use client"
 
 import { useState } from "react";
-import { Plot } from "../plots/scatter_plot"
+import { Plot } from "../plots/plots"
 import { ActivityItem } from "../components/ActivityItem"
 import getXYData from "../client_functions/getXYData"
-
-//TODO:
-  //make plot scale according to the size of the page
 
 export default function Page() {
   
@@ -208,7 +205,7 @@ export default function Page() {
             {errorMessage && <p className="text-red-600 text-center pt-5">{errorMessage}</p>}
           </form>
 
-          <div className="pt-15">
+          <div className="flex pt-15 justify-center items-center">
             <Plot chartTitle={plotTitle} yAxisTitle={plotYAxis} xAxisTitle={plotXAxis} chartData={plotData}/>
           </div>
 
