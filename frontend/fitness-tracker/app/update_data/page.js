@@ -1,55 +1,114 @@
 "use client";
 import Link from "next/link";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { updateActivity } from "../server_functions/updateActivity"
 
 // TODO: update the below function
-    // needs to fetch activity data for the given activity ID
-    // set this info as the placeholders/defaultValues in the form
-    // user input for the updated fields
+    // needs to fetch activity data for the given activity ID (done)
+    // set this info as the placeholders/defaultValues in the form (semi-done)
+    // user input for the updated fields (done)
     // update database
 
 export default function Page() {
-  const [errorMessage, setErrorMessage] = useState("")
-  const [successMessage, setSuccessMessage] = useState("")
+  const [errorMessageId, setErrorMessageId] = useState("")
+  const [errorMessageUpdate, setErrorMessageUpdate] = useState("")
+  const [successMessageUpdate, setSuccessMessageUpdate] = useState("")
   const [activityId, setActivityId] = useState("")
+  const [activityData, setActivityData] = useState("")
+  // const [formData, setFormData] = useState({
+  //   user_id: "",
+  //   activity: "",
+  //   activity_type: "",
+  //   date: "",
+  //   time: "",
+  //   elevation_m: "",
+  //   distance_km: "",
+  //   moving_time: "",
+  //   perceived_effort: ""
+  // })
   
-  // TODO: update the below function
-  async function handleSubmit(formData) {
+  async function fetchActivities(activityId) {
+    try {
+      const url = `http://localhost:8080/activities/${activityId}`
+      
+      const response = await fetch(url)
+      
+      if (!response.ok) {
+        throw new Error(`HTTP error! Status: ${response.status}`)
+      } 
+      
+      const data = await response.json()
+      
+      setActivityData(data)
+      // setFormData({
+      //   user_id: data.user_id,
+      //   activity: data.activity,
+      //   activity_type: data.activity_type,
+      //   date: data.date,
+      //   time: data.time,
+      //   elevation_m: data.elevation_m,
+      //   distance_km: data.distance_km,
+      //   moving_time: data.moving_time,
+      //   perceived_effort: data.perceived_effort
+      // })
+      
+      return {success: true}
+      
+    } catch (error) {
+      console.error("API Error", error)
+      setActivityData([])
+      return {success: false, error: `Activity ID ${activityId} does not exist. Please try again.`}
+    }
+  }
+  
+  
+  // useEffect (React hook) runs side effect after component renders. 
+  // Second arg [activityId] - dependancy array (tell it to only run effect when the value changes)
+  // useEffect(() => {
+  //   if (activityId) {
+  //     fetchActivities(activityId)
+  //   }
+  // }, [activityId])
+
+
+  async function handleActivityIdSubmit() {
+    const result = await fetchActivities(activityId)
+
+    if (result.success) {
+      setErrorMessageId("")
+    } else {
+      setErrorMessageId(result.error)
+    }
+  }
+
+  // TODO: write updateActivity function
+  async function handleUpdateSubmit(formData) {
     const result = await updateActivity(formData);
 
     if (result.success) {
-      setSuccessMessage("Activity updated!");
-      setErrorMessage("");
+      setSuccessMessageUpdate("Activity updated!");
+      setErrorMessageUpdate("");
     } else {
-      setErrorMessage(result.error);
-      setSuccessMessage("");
+      setErrorMessageUpdate(result.error);
+      setSuccessMessageUpdate("");
     }
   }
 
-  // TODO: update with fetched activity data
-  function placeholders(attribute) {
-    const placeholderValues = {
-        userId: 3,
-        activity: "Run",
-        activity_type: "Road",
-        date: "2025-05-01",
-        time: "17:00",
-        elevation_m: 200,
-        distance_km: 5.00,
-        moving_time: "00:30:00",
-        perceived_effort: 5
-    }
-    const placeholderValue = placeholderValues[attribute]
-    return placeholderValue
+
+  function defaultActivityValues(attribute) {
+    const activityValues = activityData
+    const activityValue = activityValues[attribute]
+    return activityValue
   }
   
+  // {/* Bug: default values don't update if previously edited (because defaultValue is only used in the first render) */}
+  // {/* Bug: drop downs don't change to default values */}
+  // {/* Bug: "update activity ID X below" - would rather the number change when Enter is clicked */}
   return ( 
       <>
         <main>
           <p className="text-[45px] text-center py-8 font-semibold font-[family-name:var(--font-geist-mono)]">Update Activity Data</p>
-          {/* TODO: Add action={something} to form */}
-          <form className="flex gap-2 flex-col">
+          <form action={handleActivityIdSubmit} className="flex gap-2 flex-col">
             {/* Activity_id input */}  
             <div className="flex items-center gap-4">
               <label htmlFor="id" className="w-80 text-right">Which Activity ID would you like to update?</label>          
@@ -58,20 +117,23 @@ export default function Page() {
                 name="id" 
                 title="Activity ID number" 
                 placeholder="1" 
+                defaultValue={activityId}
+                onChange={(formData) => setActivityId(formData.target.value)}
                 className="w-10 border border-teal-800 bg-transparent rounded outline-none focus-within:border-teal-600"></input>
-              <Link
-                href=".."
-                className="text-center border rounded-full border-solid border-transparent focus-within:border-teal-600 w-18 hover:bg-teal-600 bg-slate-700 text-white"
+              <button 
+                type="submit"
+                className="text-center border rounded-full border-solid border-transparent focus-within:border-teal-600 w-17 hover:bg-teal-600 bg-slate-700 text-white"
               >
                 Enter
-              </Link>
+              </button>
             </div>
-            </form>
+            {/* if message exists (ie not null/""/false) - render <p> element. Otherwise render nothing. */}            
+            {errorMessageId && <p className="text-red-600 text-center pt-5">{errorMessageId}</p>}
+          </form>
           
-          <p className="py-10 font-semibold text-center">Update your activity below:</p>
+          <p className="py-10 font-semibold text-center">Update Activity ID {activityId} below:</p>
           
-          {/* TODO: Add action={handleSubmit} to form */}
-          <form action={handleSubmit} className="flex gap-2 flex-col">
+          <form action={handleUpdateSubmit} className="flex gap-2 flex-col">
             {/* User_id input */}  
             <div className="flex items-center gap-4">
               <label htmlFor="user_id" className="w-50 text-right">User ID:</label>          
@@ -79,8 +141,8 @@ export default function Page() {
                 type="text" 
                 name="user_id" 
                 title="User ID number" 
-                placeholder={placeholders("userId")} 
-                defaultValue={placeholders("userId")} 
+                placeholder={defaultActivityValues("user_id")} 
+                defaultValue={defaultActivityValues("user_id")} 
                 className="border border-teal-800 bg-transparent rounded outline-none focus-within:border-teal-600"></input>
             </div>
 
@@ -90,7 +152,7 @@ export default function Page() {
               <select 
                 name="activity"
                 className="w-45 border border-teal-800 bg-transparent rounded outline-none focus-within:border-teal-600"
-                defaultValue={placeholders("activity")} 
+                defaultValue={defaultActivityValues("activity")} 
                 >
                 <option value="run">Run</option>
               </select>
@@ -102,9 +164,8 @@ export default function Page() {
               <select 
                 name="activity_type"
                 className="w-45 border border-teal-800 bg-transparent rounded outline-none focus-within:border-teal-600"
-                defaultValue={placeholders("activity_type")} 
+                defaultValue={defaultActivityValues("activity_type")} 
                 >
-                <option value="" disabled selected hidden></option>
                 <option value="road">Road</option>
                 <option value="trail">Trail</option>
               </select>
@@ -118,7 +179,7 @@ export default function Page() {
                 name="date" 
                 min="1981-01-01"
                 max="2081-01-01"
-                defaultValue={placeholders("date")}
+                defaultValue={defaultActivityValues("date")}
                 className="w-45 border border-teal-800 bg-transparent rounded outline-none focus-within:border-teal-600"></input>
             </div>
 
@@ -129,7 +190,7 @@ export default function Page() {
                 type="time" 
                 name="time"
                 title="hh:mm"
-                defaultValue={placeholders("time")} 
+                defaultValue={defaultActivityValues("time")} 
                 className="w-45 border border-teal-800 bg-transparent rounded outline-none focus-within:border-teal-600"></input>
             </div> 
 
@@ -141,7 +202,7 @@ export default function Page() {
                 name="elevation_m" 
                 title="meters" 
                 placeholder="25"
-                defaultValue={placeholders("elevation_m")} 
+                defaultValue={defaultActivityValues("elevation_m")} 
                 className="border border-teal-800 bg-transparent rounded outline-none focus-within:border-teal-600"></input>
             </div>  
 
@@ -153,7 +214,7 @@ export default function Page() {
                 name="distance_km" 
                 title="km" 
                 placeholder="5.05"
-                defaultValue={placeholders("distance_km")}  
+                defaultValue={defaultActivityValues("distance_km")}  
                 className="border border-teal-800 bg-transparent rounded outline-none focus-within:border-teal-600"></input>
             </div>                    
 
@@ -165,7 +226,7 @@ export default function Page() {
                 name="moving_time" 
                 title="hh:mm:ss" 
                 step="1" //steps in increments of 1 second
-                defaultValue={placeholders("moving_time")}
+                defaultValue={defaultActivityValues("moving_time")}
                 className="w-45 border border-teal-800 bg-transparent rounded outline-none focus-within:border-teal-600">
               </input>
             </div>  
@@ -177,9 +238,8 @@ export default function Page() {
                 name="perceived_effort"
                 title="1 (very easy) to 10 (very hard)" 
                 className="w-45 border border-teal-800 bg-transparent rounded outline-none focus-within:border-teal-600"
-                defaultValue={placeholders("perceived_effort")}
+                defaultValue={defaultActivityValues("perceived_effort")}
                 >
-                <option value="" disabled selected hidden></option>
                 <option value="1">1 (extremely easy)</option>
                 <option value="2">2 (very easy)</option>
                 <option value="3">3 (easy)</option>
@@ -210,8 +270,8 @@ export default function Page() {
             </div>
 
             {/* if message exists (ie not null/""/false) - render <p> element. Otherwise render nothing. */}            
-            {errorMessage && <p className="text-red-600 text-center pt-5">{errorMessage}</p>}
-            {successMessage && <p className="text-black text-center pl-45 pt-5">{successMessage}</p>}
+            {errorMessageUpdate && <p className="text-red-600 text-center pt-5">{errorMessageUpdate}</p>}
+            {successMessageUpdate && <p className="text-black text-center pl-45 pt-5">{successMessageUpdate}</p>}
           </form>
         </main>
       </>
