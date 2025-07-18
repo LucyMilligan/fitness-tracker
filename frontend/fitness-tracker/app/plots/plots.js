@@ -1,4 +1,4 @@
-import React from 'react';
+import React from "react";
 import {
   Chart as ChartJS,
   LinearScale,
@@ -7,22 +7,32 @@ import {
   Tooltip,
   Legend,
   Title,
-  TimeScale
-} from 'chart.js';
-import { Scatter, Bar } from 'react-chartjs-2';
-import 'chartjs-adapter-date-fns';
+  TimeScale,
+} from "chart.js";
+import { Scatter, Bar } from "react-chartjs-2";
+import "chartjs-adapter-date-fns";
 
-ChartJS.register(Title, LinearScale, PointElement, LineElement, Tooltip, Legend, TimeScale)
+ChartJS.register(
+  Title,
+  LinearScale,
+  PointElement,
+  LineElement,
+  Tooltip,
+  Legend,
+  TimeScale
+);
 
 function isReversed(yAxisTitle) {
   //reverse y axis for pace (smaller number = faster), but not for speed
-  let reversed = false
+  let reversed = false;
   if (yAxisTitle == "Pace (min/km)") {
-    reversed = true
+    reversed = true;
   }
-  return reversed
+  return reversed;
 }
 
+// could combine the plots and add logic to see if xaxis is time based, then
+// insert the type: "time" into scales>x
 function scatterPlot(chartTitle, yAxisTitle, xAxisTitle, chartData) {
   const options = {
     plugins: {
@@ -34,15 +44,15 @@ function scatterPlot(chartTitle, yAxisTitle, xAxisTitle, chartData) {
         color: "black",
         font: {
           size: 16,
-          weight: "bold"
+          weight: "bold",
         },
         padding: {
-          bottom: 10
-        }
+          bottom: 10,
+        },
       },
       legend: {
-        display: false
-      }
+        display: false,
+      },
     },
     scales: {
       y: {
@@ -51,20 +61,22 @@ function scatterPlot(chartTitle, yAxisTitle, xAxisTitle, chartData) {
           text: yAxisTitle,
           color: "black",
           font: {
-            size: 14
-          }
+            size: 14,
+          },
         },
         reverse: isReversed(yAxisTitle),
         border: {
-          color: "black"},
+          color: "black",
+        },
         grid: {
-          tickColor: "black"},
+          tickColor: "black",
+        },
         ticks: {
           color: "black",
           font: {
-            size: 14
-          }
-        }
+            size: 14,
+          },
+        },
       },
       x: {
         title: {
@@ -72,34 +84,35 @@ function scatterPlot(chartTitle, yAxisTitle, xAxisTitle, chartData) {
           text: xAxisTitle,
           color: "black",
           font: {
-            size: 14
-          }
+            size: 14,
+          },
         },
         border: {
-          color: "black"},
+          color: "black",
+        },
         grid: {
-          tickColor: "black"},
+          tickColor: "black",
+        },
         ticks: {
           color: "black",
           font: {
-            size: 14
-          }
-        }
-      }
-    }
-  }
+            size: 14,
+          },
+        },
+      },
+    },
+  };
   const data = {
     datasets: [
       {
         label: chartTitle,
         data: chartData,
-        backgroundColor: "rgb(43, 125, 17)"
-      }
-    ]
-  }
-  return <Scatter options={options} data={data} />
+        backgroundColor: "rgb(43, 125, 17)",
+      },
+    ],
+  };
+  return <Scatter options={options} data={data} />;
 }
-
 
 function scatterPlotDate(chartTitle, yAxisTitle, xAxisTitle, chartData) {
   const options = {
@@ -110,15 +123,15 @@ function scatterPlotDate(chartTitle, yAxisTitle, xAxisTitle, chartData) {
         color: "black",
         font: {
           size: 16,
-          weight: "bold"
+          weight: "bold",
         },
         padding: {
-          bottom: 10
-        }
+          bottom: 10,
+        },
       },
       legend: {
-        display: false
-      }
+        display: false,
+      },
     },
     scales: {
       y: {
@@ -127,20 +140,22 @@ function scatterPlotDate(chartTitle, yAxisTitle, xAxisTitle, chartData) {
           text: yAxisTitle,
           color: "black",
           font: {
-            size: 14
-          }
+            size: 14,
+          },
         },
         reverse: isReversed(yAxisTitle),
         border: {
-          color: "black"},
+          color: "black",
+        },
         grid: {
-          tickColor: "black"},
+          tickColor: "black",
+        },
         ticks: {
           color: "black",
           font: {
-            size: 14
-          }
-        }
+            size: 14,
+          },
+        },
       },
       x: {
         type: "time",
@@ -149,52 +164,52 @@ function scatterPlotDate(chartTitle, yAxisTitle, xAxisTitle, chartData) {
           text: xAxisTitle,
           color: "black",
           font: {
-            size: 14
-          }
+            size: 14,
+          },
         },
         border: {
-          color: "black"},
+          color: "black",
+        },
         grid: {
-          tickColor: "black"},
+          tickColor: "black",
+        },
         ticks: {
           color: "black",
           font: {
-            size: 14
-          }
-        }
-      }
-    }
-  }
+            size: 14,
+          },
+        },
+      },
+    },
+  };
   const data = {
     datasets: [
       {
         label: chartTitle,
         data: chartData,
-        backgroundColor: "rgb(43, 125, 17)"
-      }
-    ]
-  }
-  return <Scatter options={options} data={data} />
+        backgroundColor: "rgb(43, 125, 17)",
+      },
+    ],
+  };
+  return <Scatter options={options} data={data} />;
 }
-
 
 // function BarChart(chartTitle, yAxisTitle, xAxisTitle, chartData) {
 //   return <Bar options={options} data={data} />
 // }
 
+export function Plot({ chartTitle, yAxisTitle, xAxisTitle, chartData }) {
+  let plot = null;
 
-export function Plot({chartTitle, yAxisTitle, xAxisTitle, chartData}) {
-  let plot = null
-  
   switch (xAxisTitle) {
     case "Distance (km)":
     case "Elevation (m)":
     case "Perceived Effort (1 [very easy] - 10 [maximum effort])":
-      plot = scatterPlot(chartTitle, yAxisTitle, xAxisTitle, chartData)
-      break
+      plot = scatterPlot(chartTitle, yAxisTitle, xAxisTitle, chartData);
+      break;
     case "Date":
-      plot = scatterPlotDate(chartTitle, yAxisTitle, xAxisTitle, chartData)
-      break
-  } 
-  return plot
+      plot = scatterPlotDate(chartTitle, yAxisTitle, xAxisTitle, chartData);
+      break;
+  }
+  return plot;
 }

@@ -12,7 +12,7 @@ router = APIRouter()
 async def get_activities(
     session: SessionDep,
     offset: int = 0,
-    limit: int = 10,
+    limit: int = 100,
     sort_by: SortBy = "id",
     order_by: OrderBy = "asc",
 ):
