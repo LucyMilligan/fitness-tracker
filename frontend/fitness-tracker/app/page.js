@@ -22,7 +22,7 @@ export default function Home() {
           </li>
         </ol> */}
 
-        <div className="flex gap-6 items-center justify-center flex-col sm:flex-row py-6">
+        <div className="flex gap-6 items-center justify-center flex-col py-10">
           <Link
             className="rounded-full border border-solid border-transparent transition-colors flex items-center justify-center bg-slate-700 text-white gap-2 hover:bg-teal-600 font-normal text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 sm:w-auto"
             href="create_user"
@@ -40,6 +40,12 @@ export default function Home() {
             href="view_data"
           >
             View Activity Data
+          </Link>
+          <Link
+            className="rounded-full border border-solid border-transparent transition-colors flex items-center justify-center bg-slate-700 text-white gap-2 hover:bg-teal-600 font-normal text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 sm:w-auto"
+            href="update_data"
+          >
+            Update Activity Data
           </Link>
           <Link
             className="rounded-full border border-solid border-transparent transition-colors flex items-center justify-center bg-slate-700 text-white gap-2 hover:bg-teal-600 font-normal text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 sm:w-auto"
