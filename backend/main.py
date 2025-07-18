@@ -12,17 +12,24 @@ from fastapi.middleware.cors import CORSMiddleware
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
+    """creates database and tables on startup (before the app
+    starts handling requests)"""
     create_db_and_tables()
     yield
 
 
+# create FastAPI app instance, using above func to handle startup events
 app = FastAPI(lifespan=lifespan)
 
 
+# organising API endpoints into groups using routers
 app.include_router(activities.router, prefix="/activities")
 app.include_router(users.router, prefix="/users")
 
 
+# add middleware to allow backend to accept requests from the 
+# frontend, which runs on a different domain. Middleware runs before / 
+# after each request
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],  # or ["http://localhost:3000"]

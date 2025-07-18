@@ -103,7 +103,7 @@ async def get_activities_by_user_id(
     session: SessionDep,
     user_id: int,
     offset: int = 0,
-    limit: int = 10,
+    limit: int = 100,
     sort_by: SortBy = "id",
     order_by: OrderBy = "asc",
 ):
