@@ -2,7 +2,7 @@
 
 A simple web-based fitness/activity tracker application with a graphical user interface. The app allows users input activity data (e.g. a run), track their activities and give some visual insights into the users fitness.
 
-The aim of this project is to build upon the cli-fitness-tracker application, adding a graphical user interface and additional features. Alongside developing the backend using Python, FastAPI, SQLAlchemy and a PostgreSQL database, I have learnt and developed frontend skills including Next.js (React framework), Javascript, HTML, TailwindCSS and Chart.js.
+The aim of this project is to build upon the [cli-fitness-tracker application](https://github.com/LucyMilligan/cli-fitness-tracker), adding a graphical user interface and additional features. Alongside developing the backend using Python, FastAPI, SQLAlchemy and a PostgreSQL database, I have learnt and developed frontend skills including Next.js (React framework), Javascript, HTML, TailwindCSS and Chart.js.
 
 Note: It is a work in progress. This document will get updated as the project progresses and becomes more user friendly.
 
